@@ -1,11 +1,185 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from "react";
+import { Wheel } from "react-custom-roulette";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
+
+interface Beneficiary {
+  name: string;
+  dni: string;
+  date: string;
+  prize?: string;
+}
+
+const prizes = [
+  { option: "S/ 50.00 SOLES DE DESCUENTO ADICIONAL", number: 1 },
+  { option: "S/ 150.00 SOLES DSC EN TU PROXIMO CURSO", number: 2 },
+  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 3 },
+  { option: "ENVIO DE CERTIFICADO GRATUITO", number: 4 },
+  { option: "S/ 30 DCS EN TU CERTIFICADO ACREDITADO", number: 5 },
+  { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 6 },
+  { option: "2 CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 7 },
+];
 
 const Index = () => {
+  const [name, setName] = useState("");
+  const [dni, setDni] = useState("");
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  const [mustSpin, setMustSpin] = useState(false);
+  const [prizeNumber, setPrizeNumber] = useState(0);
+  const [currentBeneficiary, setCurrentBeneficiary] = useState<Beneficiary | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const savedBeneficiaries = localStorage.getItem("beneficiaries");
+    if (savedBeneficiaries) {
+      setBeneficiaries(JSON.parse(savedBeneficiaries));
+    }
+  }, []);
+
+  const saveBeneficiaries = (newBeneficiaries: Beneficiary[]) => {
+    localStorage.setItem("beneficiaries", JSON.stringify(newBeneficiaries));
+    setBeneficiaries(newBeneficiaries);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!name || !dni) {
+      toast({
+        title: "Error",
+        description: "Por favor complete todos los campos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (beneficiaries.some((b) => b.dni === dni)) {
+      toast({
+        title: "Error",
+        description: "Este DNI ya ha sido registrado",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newBeneficiary: Beneficiary = {
+      name,
+      dni,
+      date: format(new Date(), "dd/MM/yyyy"),
+    };
+
+    setCurrentBeneficiary(newBeneficiary);
+    const newPrizeNumber = Math.floor(Math.random() * prizes.length);
+    setPrizeNumber(newPrizeNumber);
+    setMustSpin(true);
+  };
+
+  const handleStopSpinning = () => {
+    setMustSpin(false);
+    if (currentBeneficiary) {
+      const updatedBeneficiary = {
+        ...currentBeneficiary,
+        prize: prizes[prizeNumber].option,
+      };
+      const newBeneficiaries = [...beneficiaries, updatedBeneficiary];
+      saveBeneficiaries(newBeneficiaries);
+      
+      toast({
+        title: "¡Felicitaciones!",
+        description: `Has ganado: ${prizes[prizeNumber].option}`,
+      });
+
+      setName("");
+      setDni("");
+      setCurrentBeneficiary(null);
+    }
+  };
+
+  const data = prizes.map((prize) => ({
+    option: prize.number.toString(),
+    style: { fontSize: "24px", fontWeight: "bold" },
+  }));
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="glass rounded-xl p-6 space-y-6">
+          <h2 className="text-2xl font-bold text-center mb-6">Registro de Beneficiario</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nombre completo</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-white/50"
+                placeholder="Ingrese nombre completo"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dni">DNI</Label>
+              <Input
+                id="dni"
+                value={dni}
+                onChange={(e) => setDni(e.target.value)}
+                className="bg-white/50"
+                placeholder="Ingrese DNI"
+                maxLength={8}
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={mustSpin}
+            >
+              Registrar y Girar
+            </Button>
+          </form>
+
+          {currentBeneficiary && (
+            <div className="mt-6 p-4 bg-white/30 rounded-lg">
+              <h3 className="font-semibold mb-2">Último Beneficiario:</h3>
+              <p>Nombre: {currentBeneficiary.name}</p>
+              <p>DNI: {currentBeneficiary.dni}</p>
+              <p>Fecha: {currentBeneficiary.date}</p>
+              {currentBeneficiary.prize && (
+                <p className="mt-2 font-semibold">Premio: {currentBeneficiary.prize}</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center">
+          <div className="mb-6">
+            <Wheel
+              mustStartSpinning={mustSpin}
+              prizeNumber={prizeNumber}
+              data={data}
+              onStopSpinning={handleStopSpinning}
+              textColors={["#000000"]}
+              backgroundColors={["#ffffff"]}
+              outerBorderColor="#dddddd"
+              radiusLineColor="#dddddd"
+              radiusLineWidth={1}
+              fontSize={24}
+            />
+          </div>
+          <div className="w-full max-w-md mt-6">
+            <h3 className="text-xl font-bold mb-4">Premios:</h3>
+            <ul className="space-y-2">
+              {prizes.map((prize, index) => (
+                <li key={index} className="flex items-center gap-2 bg-white/30 p-3 rounded-lg">
+                  <span className="font-bold text-lg">{prize.number}.</span>
+                  <span>{prize.option}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

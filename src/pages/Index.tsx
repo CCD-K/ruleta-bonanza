@@ -31,6 +31,7 @@ const Index = () => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [currentBeneficiary, setCurrentBeneficiary] = useState<Beneficiary | null>(null);
+  const [lastWinner, setLastWinner] = useState<Beneficiary | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -87,6 +88,7 @@ const Index = () => {
       };
       const newBeneficiaries = [...beneficiaries, updatedBeneficiary];
       saveBeneficiaries(newBeneficiaries);
+      setLastWinner(updatedBeneficiary);
       
       toast({
         title: "¡Felicitaciones!",
@@ -101,7 +103,7 @@ const Index = () => {
 
   const data = prizes.map((prize) => ({
     option: prize.number.toString(),
-    style: { fontSize: "24px", fontWeight: "bold" },
+    style: { fontSize: 24, fontWeight: "bold" }
   }));
 
   return (
@@ -140,15 +142,13 @@ const Index = () => {
             </Button>
           </form>
 
-          {currentBeneficiary && (
+          {lastWinner && (
             <div className="mt-6 p-4 bg-white/30 rounded-lg">
-              <h3 className="font-semibold mb-2">Último Beneficiario:</h3>
-              <p>Nombre: {currentBeneficiary.name}</p>
-              <p>DNI: {currentBeneficiary.dni}</p>
-              <p>Fecha: {currentBeneficiary.date}</p>
-              {currentBeneficiary.prize && (
-                <p className="mt-2 font-semibold">Premio: {currentBeneficiary.prize}</p>
-              )}
+              <h3 className="font-semibold mb-2">Último Ganador:</h3>
+              <p>Nombre: {lastWinner.name}</p>
+              <p>DNI: {lastWinner.dni}</p>
+              <p>Fecha: {lastWinner.date}</p>
+              <p className="mt-2 font-bold text-primary">Premio: {lastWinner.prize}</p>
             </div>
           )}
         </div>

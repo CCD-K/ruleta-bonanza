@@ -6,12 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Beneficiary {
+  id?: string;
   name: string;
   dni: string;
   date: string;
   prize?: string;
+  created_at?: string;
 }
 
 const prizes = [
@@ -35,18 +38,33 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const savedBeneficiaries = localStorage.getItem("beneficiaries");
-    if (savedBeneficiaries) {
-      setBeneficiaries(JSON.parse(savedBeneficiaries));
-    }
+    fetchBeneficiaries();
   }, []);
 
-  const saveBeneficiaries = (newBeneficiaries: Beneficiary[]) => {
-    localStorage.setItem("beneficiaries", JSON.stringify(newBeneficiaries));
-    setBeneficiaries(newBeneficiaries);
+  const fetchBeneficiaries = async () => {
+    const { data, error } = await supabase
+      .from('beneficiaries')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Error al cargar los beneficiarios",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (data) {
+      setBeneficiaries(data);
+      if (data.length > 0) {
+        setLastWinner(data[0]);
+      }
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name || !dni) {
@@ -58,7 +76,13 @@ const Index = () => {
       return;
     }
 
-    if (beneficiaries.some((b) => b.dni === dni)) {
+    const { data: existingBeneficiary } = await supabase
+      .from('beneficiaries')
+      .select('dni')
+      .eq('dni', dni)
+      .single();
+
+    if (existingBeneficiary) {
       toast({
         title: "Error",
         description: "Este DNI ya ha sido registrado",
@@ -79,16 +103,29 @@ const Index = () => {
     setMustSpin(true);
   };
 
-  const handleStopSpinning = () => {
+  const handleStopSpinning = async () => {
     setMustSpin(false);
     if (currentBeneficiary) {
-      const updatedBeneficiary = {
+      const beneficiaryWithPrize = {
         ...currentBeneficiary,
         prize: prizes[prizeNumber].option,
       };
-      const newBeneficiaries = [...beneficiaries, updatedBeneficiary];
-      saveBeneficiaries(newBeneficiaries);
-      setLastWinner(updatedBeneficiary);
+
+      const { error } = await supabase
+        .from('beneficiaries')
+        .insert([beneficiaryWithPrize]);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Error al guardar el beneficiario",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      await fetchBeneficiaries();
+      setLastWinner(beneficiaryWithPrize);
       
       toast({
         title: "¡Felicitaciones!",
@@ -186,3 +223,4 @@ const Index = () => {
 };
 
 export default Index;
+

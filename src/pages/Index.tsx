@@ -8,13 +8,22 @@ import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 
-interface Beneficiary {
+// Define interfaces that match our current usage without conflicting with Supabase types
+interface DisplayBeneficiary {
   id?: string;
   name: string;
   dni: string;
   date: string;
   prize?: string;
   created_at?: string;
+}
+
+interface DBBeneficiary {
+  id: string;
+  name: string;
+  dni: string;
+  date: string;
+  created_at: string;
 }
 
 const prizes = [
@@ -30,11 +39,11 @@ const prizes = [
 const Index = () => {
   const [name, setName] = useState("");
   const [dni, setDni] = useState("");
-  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<DisplayBeneficiary[]>([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [currentBeneficiary, setCurrentBeneficiary] = useState<Beneficiary | null>(null);
-  const [lastWinner, setLastWinner] = useState<Beneficiary | null>(null);
+  const [currentBeneficiary, setCurrentBeneficiary] = useState<DisplayBeneficiary | null>(null);
+  const [lastWinner, setLastWinner] = useState<DisplayBeneficiary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -52,9 +61,14 @@ const Index = () => {
       if (error) throw error;
 
       if (data) {
-        setBeneficiaries(data);
-        if (data.length > 0) {
-          setLastWinner(data[0]);
+        // Convert DB beneficiaries to display beneficiaries
+        const displayBeneficiaries = data.map((b: DBBeneficiary) => ({
+          ...b,
+          prize: lastWinner?.prize // Only the last winner will have a prize in memory
+        }));
+        setBeneficiaries(displayBeneficiaries);
+        if (displayBeneficiaries.length > 0) {
+          setLastWinner(displayBeneficiaries[0]);
         }
       }
     } catch (error) {
@@ -110,7 +124,7 @@ const Index = () => {
         return;
       }
 
-      const newBeneficiary: Beneficiary = {
+      const newBeneficiary: DisplayBeneficiary = {
         name: name.trim(),
         dni: dni.trim(),
         date: format(new Date(), "dd/MM/yyyy"),
@@ -132,11 +146,14 @@ const Index = () => {
     }
   };
 
-  const saveBeneficiary = async (beneficiary: Beneficiary) => {
+  const saveBeneficiary = async (beneficiary: DisplayBeneficiary) => {
     try {
+      // Only save the beneficiary data without the prize
+      const { prize, ...beneficiaryData } = beneficiary;
+      
       const { error } = await supabase
         .from('beneficiaries')
-        .insert([beneficiary]);
+        .insert([beneficiaryData]);
 
       if (error) throw error;
       
@@ -265,4 +282,3 @@ const Index = () => {
 };
 
 export default Index;
-

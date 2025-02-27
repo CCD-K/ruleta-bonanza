@@ -33,15 +33,68 @@ export type Database = {
         }
         Relationships: []
       }
+      beneficiary_prizes: {
+        Row: {
+          created_at: string
+          date: string
+          dni: string
+          id: string
+          name: string
+          prize: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          dni: string
+          id?: string
+          name: string
+          prize: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          dni?: string
+          id?: string
+          name?: string
+          prize?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never

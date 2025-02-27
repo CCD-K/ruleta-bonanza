@@ -251,12 +251,14 @@ const Index = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="glass rounded-xl p-6 space-y-6 h-fit ">
-          <h2 className="text-2xl font-bold text-center mb-6 text-black ">
+          <h2 className="text-2xl font-bold text-center mb-6 text-white  ">
             Registro de Beneficiario
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="">Nombre completo</Label>
+              <Label htmlFor="name" className="">
+                Nombre completo
+              </Label>
               <Input
                 id="name"
                 value={name}
@@ -267,7 +269,9 @@ const Index = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dni" className="">DNI</Label>
+              <Label htmlFor="dni" className="">
+                DNI
+              </Label>
               <Input
                 id="dni"
                 value={dni}
@@ -298,6 +302,25 @@ const Index = () => {
               </p>
             </div>
           )}
+
+          <div className="grid grid-cols-3 gap-4 items-center justify-center mx-auto
+          ">
+            <img
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-cdidp-white.svg"
+              alt="Centro de Capacitación y Desarrollo"
+              className="w-[9rem] transform transition-transform duration-300 group-hover:scale-110"
+            />
+            <img
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-pmi-white.svg"
+              alt="Centro de Capacitación y Desarrollo"
+              className="w-[9rem] transform transition-transform duration-300 group-hover:scale-110"
+            />
+            <img
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-cdd-white5.svg"
+              alt="Centro de Capacitación y Desarrollo"
+              className="w-[20rem] transform transition-transform duration-300 group-hover:scale-110"
+            />
+          </div>
         </div>
 
         <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-black">

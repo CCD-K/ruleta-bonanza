@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -45,7 +44,8 @@ const Index = () => {
   const [beneficiaries, setBeneficiaries] = useState<DisplayBeneficiary[]>([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [currentBeneficiary, setCurrentBeneficiary] = useState<DisplayBeneficiary | null>(null);
+  const [currentBeneficiary, setCurrentBeneficiary] =
+    useState<DisplayBeneficiary | null>(null);
   const [lastWinner, setLastWinner] = useState<DisplayBeneficiary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -57,33 +57,38 @@ const Index = () => {
   const fetchBeneficiaries = async () => {
     try {
       const { data: prizeData, error: prizeError } = await supabase
-        .from('beneficiary_prizes')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("beneficiary_prizes")
+        .select("*")
+        .order("created_at", { ascending: false })
         .limit(1);
 
       if (prizeError) throw prizeError;
 
       const { data: beneficiaryData, error: beneficiaryError } = await supabase
-        .from('beneficiaries')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("beneficiaries")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (beneficiaryError) throw beneficiaryError;
 
       if (beneficiaryData) {
-        const displayBeneficiaries = beneficiaryData.map((b: DBBeneficiary) => ({
-          ...b,
-          prize: prizeData && prizeData[0]?.dni === b.dni ? prizeData[0].prize : undefined
-        }));
+        const displayBeneficiaries = beneficiaryData.map(
+          (b: DBBeneficiary) => ({
+            ...b,
+            prize:
+              prizeData && prizeData[0]?.dni === b.dni
+                ? prizeData[0].prize
+                : undefined,
+          })
+        );
         setBeneficiaries(displayBeneficiaries);
-        
+
         if (prizeData && prizeData.length > 0) {
           setLastWinner(prizeData[0]);
         }
       }
     } catch (error) {
-      console.error('Error fetching beneficiaries:', error);
+      console.error("Error fetching beneficiaries:", error);
       toast({
         title: "Error",
         description: "Error al cargar los beneficiarios",
@@ -97,15 +102,15 @@ const Index = () => {
       // Check both tables for existing DNI
       const [beneficiaryResult, prizeResult] = await Promise.all([
         supabase
-          .from('beneficiaries')
-          .select('dni')
-          .eq('dni', dni)
+          .from("beneficiaries")
+          .select("dni")
+          .eq("dni", dni)
           .maybeSingle(),
         supabase
-          .from('beneficiary_prizes')
-          .select('dni')
-          .eq('dni', dni)
-          .maybeSingle()
+          .from("beneficiary_prizes")
+          .select("dni")
+          .eq("dni", dni)
+          .maybeSingle(),
       ]);
 
       if (beneficiaryResult.error) throw beneficiaryResult.error;
@@ -113,16 +118,16 @@ const Index = () => {
 
       return beneficiaryResult.data !== null || prizeResult.data !== null;
     } catch (error) {
-      console.error('Error checking DNI:', error);
+      console.error("Error checking DNI:", error);
       throw error;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isSubmitting) return;
-    
+
     if (!name || !dni) {
       toast({
         title: "Error",
@@ -134,7 +139,7 @@ const Index = () => {
 
     try {
       setIsSubmitting(true);
-      
+
       const exists = await checkExistingDNI(dni);
       if (exists) {
         toast({
@@ -156,7 +161,7 @@ const Index = () => {
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       toast({
         title: "Error",
         description: "Error al procesar el registro",
@@ -178,21 +183,22 @@ const Index = () => {
 
       const prizeBeneficiaryData = {
         ...beneficiaryData,
-        prize: beneficiary.prize!
+        prize: beneficiary.prize!,
       };
 
-      const [{ error: beneficiaryError }, { error: prizeError }] = await Promise.all([
-        supabase.from('beneficiaries').insert([beneficiaryData]),
-        supabase.from('beneficiary_prizes').insert([prizeBeneficiaryData])
-      ]);
+      const [{ error: beneficiaryError }, { error: prizeError }] =
+        await Promise.all([
+          supabase.from("beneficiaries").insert([beneficiaryData]),
+          supabase.from("beneficiary_prizes").insert([prizeBeneficiaryData]),
+        ]);
 
       if (beneficiaryError) throw beneficiaryError;
       if (prizeError) throw prizeError;
-      
+
       await fetchBeneficiaries();
       return true;
     } catch (error) {
-      console.error('Error saving beneficiary:', error);
+      console.error("Error saving beneficiary:", error);
       throw error;
     }
   };
@@ -209,7 +215,7 @@ const Index = () => {
 
       await saveBeneficiary(beneficiaryWithPrize);
       setLastWinner(beneficiaryWithPrize);
-      
+
       toast({
         title: "¡Felicitaciones!",
         description: `Has ganado: ${prizes[prizeNumber].option}`,
@@ -226,20 +232,31 @@ const Index = () => {
       });
     }
   };
-
-  const data = prizes.map((prize) => ({
+  const colors = [
+    "#FF0000", // Rojo
+    "#FF7F00", // Naranja
+    "#Ff3900", // Amarillo
+    "#00FF00", // Verde
+    "#0000FF", // Azul
+    "#4B0082", // Índigo
+    "#9400D3", // Violeta
+  ];
+  const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
-    style: { fontSize: 24, fontWeight: "bold" }
+    backgroundColor: colors[index % colors.length], // Asigna colores en ciclo
+    style: { fontSize: 24, fontWeight: "bold" },
   }));
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="glass rounded-xl p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-center mb-6">Registro de Beneficiario</h2>
+        <div className="glass rounded-xl p-6 space-y-6 h-fit ">
+          <h2 className="text-2xl font-bold text-center mb-6 text-white">
+            Registro de Beneficiario
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Nombre completo</Label>
+              <Label htmlFor="name" className="text-white">Nombre completo</Label>
               <Input
                 id="name"
                 value={name}
@@ -250,7 +267,7 @@ const Index = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dni">DNI</Label>
+              <Label htmlFor="dni" className="text-white">DNI</Label>
               <Input
                 id="dni"
                 value={dni}
@@ -261,8 +278,8 @@ const Index = () => {
                 disabled={isSubmitting || mustSpin}
               />
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full"
               disabled={isSubmitting || mustSpin}
             >
@@ -276,31 +293,37 @@ const Index = () => {
               <p>Nombre: {lastWinner.name}</p>
               <p>DNI: {lastWinner.dni}</p>
               <p>Fecha: {lastWinner.date}</p>
-              <p className="mt-2 font-bold text-primary">Premio: {lastWinner.prize}</p>
+              <p className="mt-2 font-bold text-primary">
+                Premio: {lastWinner.prize}
+              </p>
             </div>
           )}
         </div>
 
-        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center">
+        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-white">
           <div className="mb-6">
             <Wheel
               mustStartSpinning={mustSpin}
               prizeNumber={prizeNumber}
               data={data}
               onStopSpinning={handleStopSpinning}
-              textColors={["#000000"]}
-              backgroundColors={["#ffffff"]}
-              outerBorderColor="#dddddd"
-              radiusLineColor="#dddddd"
-              radiusLineWidth={1}
+              textColors={["#ffffff"]}
+              backgroundColors={colors}
+              outerBorderColor="#000000"
+              radiusLineColor="#000000"
+              radiusLineWidth={4}
               fontSize={24}
             />
           </div>
-          <div className="w-full max-w-md mt-6">
+          <div className="w-full max-w-md mt-6 ">
             <h3 className="text-xl font-bold mb-4">Premios:</h3>
             <ul className="space-y-2">
               {prizes.map((prize, index) => (
-                <li key={index} className="flex items-center gap-2 bg-white/30 p-3 rounded-lg">
+                <li
+                  key={index}
+                  className="flex items-center gap-2 p-3 rounded-lg text-white"
+                  style={{ backgroundColor: colors[index] }} // Aplica el color correcto
+                >
                   <span className="font-bold text-lg">{prize.number}.</span>
                   <span>{prize.option}</span>
                 </li>

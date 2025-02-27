@@ -35,6 +35,7 @@ const Index = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [currentBeneficiary, setCurrentBeneficiary] = useState<Beneficiary | null>(null);
   const [lastWinner, setLastWinner] = useState<Beneficiary | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -42,30 +43,50 @@ const Index = () => {
   }, []);
 
   const fetchBeneficiaries = async () => {
-    const { data, error } = await supabase
-      .from('beneficiaries')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('beneficiaries')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (error) {
+      if (error) throw error;
+
+      if (data) {
+        setBeneficiaries(data);
+        if (data.length > 0) {
+          setLastWinner(data[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching beneficiaries:', error);
       toast({
         title: "Error",
         description: "Error al cargar los beneficiarios",
         variant: "destructive",
       });
-      return;
     }
+  };
 
-    if (data) {
-      setBeneficiaries(data);
-      if (data.length > 0) {
-        setLastWinner(data[0]);
-      }
+  const checkExistingDNI = async (dni: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('beneficiaries')
+        .select('dni')
+        .eq('dni', dni)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data !== null;
+    } catch (error) {
+      console.error('Error checking DNI:', error);
+      throw error;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSubmitting) return;
     
     if (!name || !dni) {
       toast({
@@ -76,55 +97,68 @@ const Index = () => {
       return;
     }
 
-    const { data: existingBeneficiary } = await supabase
-      .from('beneficiaries')
-      .select('dni')
-      .eq('dni', dni)
-      .single();
-
-    if (existingBeneficiary) {
-      toast({
-        title: "Error",
-        description: "Este DNI ya ha sido registrado",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const newBeneficiary: Beneficiary = {
-      name,
-      dni,
-      date: format(new Date(), "dd/MM/yyyy"),
-    };
-
-    setCurrentBeneficiary(newBeneficiary);
-    const newPrizeNumber = Math.floor(Math.random() * prizes.length);
-    setPrizeNumber(newPrizeNumber);
-    setMustSpin(true);
-  };
-
-  const handleStopSpinning = async () => {
-    setMustSpin(false);
-    if (currentBeneficiary) {
-      const beneficiaryWithPrize = {
-        ...currentBeneficiary,
-        prize: prizes[prizeNumber].option,
-      };
-
-      const { error } = await supabase
-        .from('beneficiaries')
-        .insert([beneficiaryWithPrize]);
-
-      if (error) {
+    try {
+      setIsSubmitting(true);
+      
+      const exists = await checkExistingDNI(dni);
+      if (exists) {
         toast({
           title: "Error",
-          description: "Error al guardar el beneficiario",
+          description: "Este DNI ya ha sido registrado",
           variant: "destructive",
         });
         return;
       }
 
+      const newBeneficiary: Beneficiary = {
+        name: name.trim(),
+        dni: dni.trim(),
+        date: format(new Date(), "dd/MM/yyyy"),
+      };
+
+      setCurrentBeneficiary(newBeneficiary);
+      const newPrizeNumber = Math.floor(Math.random() * prizes.length);
+      setPrizeNumber(newPrizeNumber);
+      setMustSpin(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Error",
+        description: "Error al procesar el registro",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const saveBeneficiary = async (beneficiary: Beneficiary) => {
+    try {
+      const { error } = await supabase
+        .from('beneficiaries')
+        .insert([beneficiary]);
+
+      if (error) throw error;
+      
       await fetchBeneficiaries();
+      return true;
+    } catch (error) {
+      console.error('Error saving beneficiary:', error);
+      throw error;
+    }
+  };
+
+  const handleStopSpinning = async () => {
+    setMustSpin(false);
+    if (!currentBeneficiary) return;
+
+    try {
+      const beneficiaryWithPrize = {
+        ...currentBeneficiary,
+        prize: prizes[prizeNumber].option,
+      };
+
+      await saveBeneficiary(beneficiaryWithPrize);
       setLastWinner(beneficiaryWithPrize);
       
       toast({
@@ -135,6 +169,12 @@ const Index = () => {
       setName("");
       setDni("");
       setCurrentBeneficiary(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error al guardar el beneficiario",
+        variant: "destructive",
+      });
     }
   };
 
@@ -157,6 +197,7 @@ const Index = () => {
                 onChange={(e) => setName(e.target.value)}
                 className="bg-white/50"
                 placeholder="Ingrese nombre completo"
+                disabled={isSubmitting || mustSpin}
               />
             </div>
             <div className="space-y-2">
@@ -168,14 +209,15 @@ const Index = () => {
                 className="bg-white/50"
                 placeholder="Ingrese DNI"
                 maxLength={8}
+                disabled={isSubmitting || mustSpin}
               />
             </div>
             <Button 
               type="submit" 
               className="w-full"
-              disabled={mustSpin}
+              disabled={isSubmitting || mustSpin}
             >
-              Registrar y Girar
+              {isSubmitting ? "Procesando..." : "Registrar y Girar"}
             </Button>
           </form>
 

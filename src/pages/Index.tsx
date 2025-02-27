@@ -233,12 +233,12 @@ const Index = () => {
     }
   };
   const colors = [
-    "#ffadad", // Rojo
-    "#ffd6a5", // Naranja
-    "#fdffb6", // Amarillo
-    "#caffbf", // Verde
-    "#9bf6ff", // Azul
-    "#a0c4ff", // Índigo
+    "#cc3c3c", // Rojo
+    "#d79748", // Naranja
+    "#e2e66b", // Amarillo
+    "#78e762", // Verde
+    "#54d1dc", // Azul
+    "#77a5ef", // Índigo
     "#6b56e0 ", // Violeta
   ];
   const data = prizes.map((prize, index) => ({
@@ -251,12 +251,12 @@ const Index = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="glass rounded-xl p-6 space-y-6 h-fit ">
-          <h2 className="text-2xl font-bold text-center mb-6 text-white">
+          <h2 className="text-2xl font-bold text-center mb-6 text-black ">
             Registro de Beneficiario
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">Nombre completo</Label>
+              <Label htmlFor="name" className="">Nombre completo</Label>
               <Input
                 id="name"
                 value={name}
@@ -267,7 +267,7 @@ const Index = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dni" className="text-white">DNI</Label>
+              <Label htmlFor="dni" className="">DNI</Label>
               <Input
                 id="dni"
                 value={dni}
@@ -300,14 +300,14 @@ const Index = () => {
           )}
         </div>
 
-        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-white">
+        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-black">
           <div className="mb-6">
             <Wheel
               mustStartSpinning={mustSpin}
               prizeNumber={prizeNumber}
               data={data}
               onStopSpinning={handleStopSpinning}
-              textColors={["#ffffff"]}
+              textColors={["#000000"]}
               backgroundColors={colors}
               outerBorderColor="#000000"
               radiusLineColor="#000000"
@@ -321,7 +321,7 @@ const Index = () => {
               {prizes.map((prize, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 p-3 rounded-lg text-white"
+                  className="flex items-center gap-2 p-3 rounded-lg "
                   style={{ backgroundColor: colors[index] }} // Aplica el color correcto
                 >
                   <span className="font-bold text-lg">{prize.number}.</span>

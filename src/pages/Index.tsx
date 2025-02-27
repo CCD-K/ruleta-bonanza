@@ -8,7 +8,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 
-// Define interfaces that match our current usage without conflicting with Supabase types
 interface DisplayBeneficiary {
   id?: string;
   name: string;
@@ -24,6 +23,10 @@ interface DBBeneficiary {
   dni: string;
   date: string;
   created_at: string;
+}
+
+interface DBBeneficiaryPrize extends DBBeneficiary {
+  prize: string;
 }
 
 const prizes = [
@@ -53,22 +56,30 @@ const Index = () => {
 
   const fetchBeneficiaries = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: prizeData, error: prizeError } = await supabase
+        .from('beneficiary_prizes')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (prizeError) throw prizeError;
+
+      const { data: beneficiaryData, error: beneficiaryError } = await supabase
         .from('beneficiaries')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (beneficiaryError) throw beneficiaryError;
 
-      if (data) {
-        // Convert DB beneficiaries to display beneficiaries
-        const displayBeneficiaries = data.map((b: DBBeneficiary) => ({
+      if (beneficiaryData) {
+        const displayBeneficiaries = beneficiaryData.map((b: DBBeneficiary) => ({
           ...b,
-          prize: lastWinner?.prize // Only the last winner will have a prize in memory
+          prize: prizeData && prizeData[0]?.dni === b.dni ? prizeData[0].prize : undefined
         }));
         setBeneficiaries(displayBeneficiaries);
-        if (displayBeneficiaries.length > 0) {
-          setLastWinner(displayBeneficiaries[0]);
+        
+        if (prizeData && prizeData.length > 0) {
+          setLastWinner(prizeData[0]);
         }
       }
     } catch (error) {
@@ -83,14 +94,24 @@ const Index = () => {
 
   const checkExistingDNI = async (dni: string) => {
     try {
-      const { data, error } = await supabase
-        .from('beneficiaries')
-        .select('dni')
-        .eq('dni', dni)
-        .maybeSingle();
+      // Check both tables for existing DNI
+      const [beneficiaryResult, prizeResult] = await Promise.all([
+        supabase
+          .from('beneficiaries')
+          .select('dni')
+          .eq('dni', dni)
+          .maybeSingle(),
+        supabase
+          .from('beneficiary_prizes')
+          .select('dni')
+          .eq('dni', dni)
+          .maybeSingle()
+      ]);
 
-      if (error) throw error;
-      return data !== null;
+      if (beneficiaryResult.error) throw beneficiaryResult.error;
+      if (prizeResult.error) throw prizeResult.error;
+
+      return beneficiaryResult.data !== null || prizeResult.data !== null;
     } catch (error) {
       console.error('Error checking DNI:', error);
       throw error;
@@ -148,14 +169,25 @@ const Index = () => {
 
   const saveBeneficiary = async (beneficiary: DisplayBeneficiary) => {
     try {
-      // Only save the beneficiary data without the prize
-      const { prize, ...beneficiaryData } = beneficiary;
-      
-      const { error } = await supabase
-        .from('beneficiaries')
-        .insert([beneficiaryData]);
+      // Insert into both tables
+      const beneficiaryData = {
+        name: beneficiary.name,
+        dni: beneficiary.dni,
+        date: beneficiary.date,
+      };
 
-      if (error) throw error;
+      const prizeBeneficiaryData = {
+        ...beneficiaryData,
+        prize: beneficiary.prize!
+      };
+
+      const [{ error: beneficiaryError }, { error: prizeError }] = await Promise.all([
+        supabase.from('beneficiaries').insert([beneficiaryData]),
+        supabase.from('beneficiary_prizes').insert([prizeBeneficiaryData])
+      ]);
+
+      if (beneficiaryError) throw beneficiaryError;
+      if (prizeError) throw prizeError;
       
       await fetchBeneficiaries();
       return true;

@@ -233,13 +233,13 @@ const Index = () => {
     }
   };
   const colors = [
-    "#FF0000", // Rojo
-    "#FF7F00", // Naranja
-    "#Ff3900", // Amarillo
-    "#00FF00", // Verde
-    "#0000FF", // Azul
-    "#4B0082", // Índigo
-    "#9400D3", // Violeta
+    "#ffadad", // Rojo
+    "#ffd6a5", // Naranja
+    "#fdffb6", // Amarillo
+    "#caffbf", // Verde
+    "#9bf6ff", // Azul
+    "#a0c4ff", // Índigo
+    "#6b56e0 ", // Violeta
   ];
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),

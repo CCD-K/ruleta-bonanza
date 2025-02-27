@@ -9,57 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      beneficiaries: {
-        Row: {
-          created_at: string
-          date: string
-          dni: string
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          dni: string
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          dni?: string
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      beneficiary_prizes: {
-        Row: {
-          created_at: string
-          date: string
-          dni: string
-          id: string
-          name: string
-          prize: string
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          dni: string
-          id?: string
-          name: string
-          prize: string
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          dni?: string
-          id?: string
-          name?: string
-          prize?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never

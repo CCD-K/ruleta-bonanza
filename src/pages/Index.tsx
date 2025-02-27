@@ -8,25 +8,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 
-interface DisplayBeneficiary {
+interface Beneficiary {
   id?: string;
   name: string;
   dni: string;
   date: string;
   prize?: string;
   created_at?: string;
-}
-
-interface DBBeneficiary {
-  id: string;
-  name: string;
-  dni: string;
-  date: string;
-  created_at: string;
-}
-
-interface DBBeneficiaryPrize extends DBBeneficiary {
-  prize: string;
 }
 
 const prizes = [
@@ -42,11 +30,11 @@ const prizes = [
 const Index = () => {
   const [name, setName] = useState("");
   const [dni, setDni] = useState("");
-  const [beneficiaries, setBeneficiaries] = useState<DisplayBeneficiary[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [currentBeneficiary, setCurrentBeneficiary] = useState<DisplayBeneficiary | null>(null);
-  const [lastWinner, setLastWinner] = useState<DisplayBeneficiary | null>(null);
+  const [currentBeneficiary, setCurrentBeneficiary] = useState<Beneficiary | null>(null);
+  const [lastWinner, setLastWinner] = useState<Beneficiary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -56,30 +44,17 @@ const Index = () => {
 
   const fetchBeneficiaries = async () => {
     try {
-      const { data: prizeData, error: prizeError } = await supabase
-        .from('beneficiary_prizes')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (prizeError) throw prizeError;
-
-      const { data: beneficiaryData, error: beneficiaryError } = await supabase
+      const { data, error } = await supabase
         .from('beneficiaries')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (beneficiaryError) throw beneficiaryError;
+      if (error) throw error;
 
-      if (beneficiaryData) {
-        const displayBeneficiaries = beneficiaryData.map((b: DBBeneficiary) => ({
-          ...b,
-          prize: prizeData && prizeData[0]?.dni === b.dni ? prizeData[0].prize : undefined
-        }));
-        setBeneficiaries(displayBeneficiaries);
-        
-        if (prizeData && prizeData.length > 0) {
-          setLastWinner(prizeData[0]);
+      if (data) {
+        setBeneficiaries(data);
+        if (data.length > 0) {
+          setLastWinner(data[0]);
         }
       }
     } catch (error) {
@@ -94,24 +69,14 @@ const Index = () => {
 
   const checkExistingDNI = async (dni: string) => {
     try {
-      // Check both tables for existing DNI
-      const [beneficiaryResult, prizeResult] = await Promise.all([
-        supabase
-          .from('beneficiaries')
-          .select('dni')
-          .eq('dni', dni)
-          .maybeSingle(),
-        supabase
-          .from('beneficiary_prizes')
-          .select('dni')
-          .eq('dni', dni)
-          .maybeSingle()
-      ]);
+      const { data, error } = await supabase
+        .from('beneficiaries')
+        .select('dni')
+        .eq('dni', dni)
+        .maybeSingle();
 
-      if (beneficiaryResult.error) throw beneficiaryResult.error;
-      if (prizeResult.error) throw prizeResult.error;
-
-      return beneficiaryResult.data !== null || prizeResult.data !== null;
+      if (error) throw error;
+      return data !== null;
     } catch (error) {
       console.error('Error checking DNI:', error);
       throw error;
@@ -145,7 +110,7 @@ const Index = () => {
         return;
       }
 
-      const newBeneficiary: DisplayBeneficiary = {
+      const newBeneficiary: Beneficiary = {
         name: name.trim(),
         dni: dni.trim(),
         date: format(new Date(), "dd/MM/yyyy"),
@@ -167,27 +132,13 @@ const Index = () => {
     }
   };
 
-  const saveBeneficiary = async (beneficiary: DisplayBeneficiary) => {
+  const saveBeneficiary = async (beneficiary: Beneficiary) => {
     try {
-      // Insert into both tables
-      const beneficiaryData = {
-        name: beneficiary.name,
-        dni: beneficiary.dni,
-        date: beneficiary.date,
-      };
+      const { error } = await supabase
+        .from('beneficiaries')
+        .insert([beneficiary]);
 
-      const prizeBeneficiaryData = {
-        ...beneficiaryData,
-        prize: beneficiary.prize!
-      };
-
-      const [{ error: beneficiaryError }, { error: prizeError }] = await Promise.all([
-        supabase.from('beneficiaries').insert([beneficiaryData]),
-        supabase.from('beneficiary_prizes').insert([prizeBeneficiaryData])
-      ]);
-
-      if (beneficiaryError) throw beneficiaryError;
-      if (prizeError) throw prizeError;
+      if (error) throw error;
       
       await fetchBeneficiaries();
       return true;
@@ -314,3 +265,4 @@ const Index = () => {
 };
 
 export default Index;
+

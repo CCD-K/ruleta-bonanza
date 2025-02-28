@@ -1,11 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 interface DisplayBeneficiary {
   id?: string;
@@ -232,6 +234,7 @@ const Index = () => {
       });
     }
   };
+  
   const colors = [
     "#cc3c3c", // Rojo
     "#d79748", // Naranja
@@ -239,16 +242,25 @@ const Index = () => {
     "#78e762", // Verde
     "#54d1dc", // Azul
     "#77a5ef", // Índigo
-    "#6b56e0 ", // Violeta
+    "#6b56e0", // Violeta
   ];
+  
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
-    backgroundColor: colors[index % colors.length], // Asigna colores en ciclo
+    backgroundColor: colors[index % colors.length],
     style: { fontSize: 24, fontWeight: "bold" },
   }));
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-end mb-4">
+        <Link to="/winners">
+          <Button variant="outline" className="bg-white/30 text-white hover:bg-white/50">
+            Ver Ganadores
+          </Button>
+        </Link>
+      </div>
+      
       <div className="grid md:grid-cols-2 gap-8">
         <div className="glass rounded-xl p-6 space-y-6 h-fit ">
           <h2 className="text-2xl font-bold text-center mb-6 text-white  ">
@@ -303,8 +315,7 @@ const Index = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-4 items-center justify-center mx-auto
-          ">
+          <div className="grid grid-cols-3 gap-4 items-center justify-center mx-auto">
             <img
               src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-cdidp-white.svg"
               alt="Centro de Capacitación y Desarrollo"
@@ -345,7 +356,7 @@ const Index = () => {
                 <li
                   key={index}
                   className="flex items-center gap-2 p-3 rounded-lg "
-                  style={{ backgroundColor: colors[index] }} // Aplica el color correcto
+                  style={{ backgroundColor: colors[index] }} 
                 >
                   <span className="font-bold text-lg">{prize.number}.</span>
                   <span>{prize.option}</span>

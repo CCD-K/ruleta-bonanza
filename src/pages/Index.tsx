@@ -221,6 +221,7 @@ const Index = () => {
       toast({
         title: "¡Felicitaciones!",
         description: `Has ganado: ${prizes[prizeNumber].option}`,
+        variant: "default",
       });
 
       setName("");
@@ -253,13 +254,7 @@ const Index = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-end mb-4">
-        <Link to="/winners">
-          <Button variant="outline" className="bg-white/30 text-white hover:bg-white/50">
-            Ver Ganadores
-          </Button>
-        </Link>
-      </div>
+      {/* Removed the Ver Ganadores button here */}
       
       <div className="grid md:grid-cols-2 gap-8">
         <div className="glass rounded-xl p-6 space-y-6 h-fit ">
@@ -304,14 +299,18 @@ const Index = () => {
           </form>
 
           {lastWinner && (
-            <div className="mt-6 p-4 bg-white/30 rounded-lg">
-              <h3 className="font-semibold mb-2">Último Ganador:</h3>
-              <p>Nombre: {lastWinner.name}</p>
-              <p>DNI: {lastWinner.dni}</p>
-              <p>Fecha: {lastWinner.date}</p>
-              <p className="mt-2 font-bold text-primary">
-                Premio: {lastWinner.prize}
-              </p>
+            <div className="mt-6 p-6 bg-white/30 backdrop-blur-md rounded-lg border border-white/20 shadow-xl animate-fade-in">
+              <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
+              <div className="space-y-2">
+                <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
+                <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
+                <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
+                <div className="mt-4 py-3 px-4 bg-primary/30 rounded-lg border border-primary/20">
+                  <p className="font-bold text-lg text-white text-center">
+                    {lastWinner.prize}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
 

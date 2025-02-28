@@ -38,6 +38,8 @@ const prizes = [
   { option: "S/ 30 DCS EN TU CERTIFICADO ACREDITADO", number: 5 },
   { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 6 },
   { option: "2 CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 7 },
+  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 8 },
+  { option: "ASESORÍA PERSONALIZADA DE 1 HORA", number: 9 },
 ];
 
 const Index = () => {
@@ -244,6 +246,8 @@ const Index = () => {
     "#54d1dc", // Azul
     "#77a5ef", // Índigo
     "#6b56e0", // Violeta
+    "#8B5CF6", // Violeta Intenso (nuevo)
+    "#F97316", // Naranja Brillante (nuevo)
   ];
   
   const data = prizes.map((prize, index) => ({

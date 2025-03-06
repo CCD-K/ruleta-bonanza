@@ -99,14 +99,14 @@ const Winners = () => {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredWinners.map((winner) => (
-              <Card key={winner.id} className="bg-white/20 backdrop-blur-sm border-none hover:bg-white/30 transition">
+              <Card key={winner.id} className="bg-blue-40 backdrop-blur-sm border-none hover:bg-blue-20/30 transition">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold">{winner.name}</CardTitle>
                   <p className="text-sm text-gray-200">DNI: {winner.dni}</p>
                   <p className="text-sm text-gray-200">Fecha: {winner.date}</p>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-primary/20 p-3 rounded-lg">
+                  <div className="bg-primary 40/10 p-3 rounded-lg">
                     <h3 className="font-semibold text-white mb-1">Premio:</h3>
                     <p className="text-white">{winner.prize}</p>
                   </div>

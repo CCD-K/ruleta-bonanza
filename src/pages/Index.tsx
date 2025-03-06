@@ -239,13 +239,13 @@ const Index = () => {
   };
   
   const colors = [
-    "#cc3c3c", // Rojo
+    "#d4dcdf", // Rojo
     "#d79748", // Naranja
-    "#e2e66b", // Amarillo
+    "#f6ff00", // Amarillo
     "#78e762", // Verde
-    "#54d1dc", // Azul
-    "#77a5ef", // Índigo
-    "#6b56e0", // Violeta
+    "#fc89b5", // Azul
+    "#38fff5", // Índigo
+    "#ff0000", // Violeta
     "#8B5CF6", // Violeta Intenso (nuevo)
     "#F97316", // Naranja Brillante (nuevo)
   ];
@@ -303,13 +303,13 @@ const Index = () => {
           </form>
 
           {lastWinner && (
-            <div className="mt-6 p-6 bg-white/30 backdrop-blur-md rounded-lg border border-white/20 shadow-xl animate-fade-in">
+            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">
               <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
               <div className="space-y-2">
                 <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
                 <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
                 <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
-                <div className="mt-4 py-3 px-4 bg-primary/30 rounded-lg border border-primary/20">
+                <div className="mt-4 py-3 px-4  bg-cyan-300/80 rounded-lg border border-primary/20">
                   <p className="font-bold text-lg text-white text-center">
                     {lastWinner.prize}
                   </p>

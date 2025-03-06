@@ -31,14 +31,14 @@ interface DBBeneficiaryPrize extends DBBeneficiary {
 }
 
 const prizes = [
-  { option: "S/ 50.00 SOLES DE DESCUENTO ADICIONAL", number: 1 },
-  { option: "S/ 150.00 SOLES DSC EN TU PROXIMO CURSO", number: 2 },
-  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 3 },
-  { option: "ENVIO DE CERTIFICADO GRATUITO", number: 4 },
-  { option: "S/ 30 DCS EN TU CERTIFICADO ACREDITADO", number: 5 },
-  { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 6 },
+  { option: "S/50.00  DE DESCT ADICIONAL", number: 1 },
+  { option: "S/150.00 DESCT EN TU PROXIMO CURSO", number: 2 },
+  { option: "UN CURSO DE REGALO CON CERTIFICADO DIGITAL", number: 3 },
+  { option: "ENVIO DE CERTIFICADO GRATUITO CCD", number: 4 },
+  { option: "S/30.00  DESCT EN TU CERTIFICADO ACREDITADO", number: 5 },
+  { option: "ACCESO A UN AÑO AL AULA VIRTUAL", number: 6 },
   { option: "VUELVE A GIRAR", number: 7 },
-  { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 8 },
+  { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTES", number: 9 },
 ];
 
@@ -266,9 +266,9 @@ const Index = () => {
             Registro de Beneficiario
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-2 text-white">
               <Label htmlFor="name" className="">
-                Nombre completo
+                NOMBRE COMPLETO
               </Label>
               <Input
                 id="name"
@@ -279,7 +279,7 @@ const Index = () => {
                 disabled={isSubmitting || mustSpin}
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 text-white"  >
               <Label htmlFor="dni" className="">
                 DNI
               </Label>
@@ -309,7 +309,7 @@ const Index = () => {
                 <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
                 <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
                 <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
-                <div className="mt-4 py-3 px-4  bg-cyan-300/80 rounded-lg border border-primary/20">
+                <div className="mt-4 py-3 px-4  bg-yellow-400/80 rounded-lg border border-primary/20">
                   <p className="font-bold text-lg text-white text-center">
                     {lastWinner.prize}
                   </p>

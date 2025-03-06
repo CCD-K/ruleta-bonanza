@@ -33,13 +33,13 @@ interface DBBeneficiaryPrize extends DBBeneficiary {
 const prizes = [
   { option: "S/ 50.00 SOLES DE DESCUENTO ADICIONAL", number: 1 },
   { option: "S/ 150.00 SOLES DSC EN TU PROXIMO CURSO", number: 2 },
-  { option: "VUELVE A GIRAR", number: 3 },
+  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 3 },
   { option: "ENVIO DE CERTIFICADO GRATUITO", number: 4 },
   { option: "S/ 30 DCS EN TU CERTIFICADO ACREDITADO", number: 5 },
   { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 6 },
-  { option: "PERDISTES", number: 7 },
+  { option: "VUELVE A GIRAR", number: 7 },
   { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 8 },
-  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 9 },
+  { option: "PERDISTES", number: 9 },
 ];
 
 const Index = () => {
@@ -239,15 +239,15 @@ const Index = () => {
   };
   
   const colors = [
-    "#d4dcdf", // Rojo
-    "#d79748", // Naranja
-    "#f6ff00", // Amarillo
-    "#78e762", // Verde
-    "#fc89b5", // Azul
-    "#38fff5", // Índigo
-    "#ff0000", // Violeta
-    "#8B5CF6", // Violeta Intenso (nuevo)
-    "#F97316", // Naranja Brillante (nuevo)
+    "#3185F7", // Rojo
+    "#00EADE", // Naranja
+    "#3a5070", // Amarillo
+    "#3185F7", // Verde
+    "#00EADE", // Azul
+    "#3a5070", // Índigo
+    "#00EADE", // Violeta
+    "#3185F7", // Violeta Intenso (nuevo)
+    "#3a5070", // Naranja Brillante (nuevo)
   ];
   
   const data = prizes.map((prize, index) => ({

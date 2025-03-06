@@ -33,13 +33,13 @@ interface DBBeneficiaryPrize extends DBBeneficiary {
 const prizes = [
   { option: "S/ 50.00 SOLES DE DESCUENTO ADICIONAL", number: 1 },
   { option: "S/ 150.00 SOLES DSC EN TU PROXIMO CURSO", number: 2 },
-  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 3 },
+  { option: "VUELVE A GIRAR", number: 3 },
   { option: "ENVIO DE CERTIFICADO GRATUITO", number: 4 },
   { option: "S/ 30 DCS EN TU CERTIFICADO ACREDITADO", number: 5 },
   { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 6 },
-  { option: "2 CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 7 },
-  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 8 },
-  { option: "ASESORÍA PERSONALIZADA DE 1 HORA", number: 9 },
+  { option: "PERDISTES", number: 7 },
+  { option: "ACCESO A UN AÑO EN EL AULA VIRTUAL", number: 8 },
+  { option: "1 CURSO DE REGALO ADICIONAL CON CERTIFICADO DIGITAL", number: 9 },
 ];
 
 const Index = () => {

@@ -40,8 +40,6 @@ const prizes = [
   { option: "VUELVE A GIRAR", number: 7 },
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTES", number: 9 },
-  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 10 },
-  { option: "ASESORIA PERSONALIZADA DE 1 HORA", number: 11 },
 ];
 
 const Index = () => {
@@ -260,7 +258,7 @@ const Index = () => {
     if (!currentBeneficiary) return;
     
     // Redirect to WhatsApp with a pre-filled message
-    const phoneNumber = "51982271488"; // Replace with your business phone number
+    const phoneNumber = "51908841254"; // Replace with your business phone number
     const message = encodeURIComponent(
       `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi premio.`
     );

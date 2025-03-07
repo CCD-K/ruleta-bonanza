@@ -40,6 +40,8 @@ const prizes = [
   { option: "VUELVE A GIRAR", number: 7 },
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTES", number: 9 },
+  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 10 },
+  { option: "1 HORA DE CONSULTORÍA PERSONALIZADA", number: 11 },
 ];
 
 const Index = () => {
@@ -52,6 +54,7 @@ const Index = () => {
     useState<DisplayBeneficiary | null>(null);
   const [lastWinner, setLastWinner] = useState<DisplayBeneficiary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [allowRespin, setAllowRespin] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -144,14 +147,18 @@ const Index = () => {
     try {
       setIsSubmitting(true);
 
-      const exists = await checkExistingDNI(dni);
-      if (exists) {
-        toast({
-          title: "Error",
-          description: "Este DNI ya ha sido registrado",
-          variant: "destructive",
-        });
-        return;
+      // Skip the DNI check if we're allowing a respin
+      if (!allowRespin) {
+        const exists = await checkExistingDNI(dni);
+        if (exists) {
+          toast({
+            title: "Error",
+            description: "Este DNI ya ha sido registrado",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
       }
 
       const newBeneficiary: DisplayBeneficiary = {
@@ -164,6 +171,7 @@ const Index = () => {
       const newPrizeNumber = Math.floor(Math.random() * prizes.length);
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
+      setAllowRespin(false); // Reset the respin flag
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
@@ -212,23 +220,34 @@ const Index = () => {
     if (!currentBeneficiary) return;
 
     try {
+      const prizeWon = prizes[prizeNumber].option;
       const beneficiaryWithPrize = {
         ...currentBeneficiary,
-        prize: prizes[prizeNumber].option,
+        prize: prizeWon,
       };
 
-      await saveBeneficiary(beneficiaryWithPrize);
-      setLastWinner(beneficiaryWithPrize);
+      // Check if the prize is "VUELVE A GIRAR"
+      if (prizes[prizeNumber].number === 7) {
+        setAllowRespin(true); // Enable respinning with the same data
+        toast({
+          title: "¡Vuelve a girar!",
+          description: "Tienes otra oportunidad, puedes volver a girar",
+          variant: "default",
+        });
+      } else {
+        await saveBeneficiary(beneficiaryWithPrize);
+        setLastWinner(beneficiaryWithPrize);
 
-      toast({
-        title: "¡Felicitaciones!",
-        description: `Has ganado: ${prizes[prizeNumber].option}`,
-        variant: "default",
-      });
+        toast({
+          title: "¡Felicitaciones!",
+          description: `Has ganado: ${prizeWon}`,
+          variant: "default",
+        });
 
-      setName("");
-      setDni("");
-      setCurrentBeneficiary(null);
+        setName("");
+        setDni("");
+        setCurrentBeneficiary(null);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -239,15 +258,17 @@ const Index = () => {
   };
   
   const colors = [
-    "#3185F7", // Rojo
-    "#00EADE", // Naranja
-    "#3a5070", // Amarillo
-    "#3185F7", // Verde
-    "#00EADE", // Azul
-    "#3a5070", // Índigo
-    "#00EADE", // Violeta
-    "#3185F7", // Violeta Intenso (nuevo)
-    "#3a5070", // Naranja Brillante (nuevo)
+    "#3185F7", // Azul
+    "#00EADE", // Turquesa
+    "#3a5070", // Azul oscuro
+    "#3185F7", // Azul
+    "#00EADE", // Turquesa
+    "#3a5070", // Azul oscuro
+    "#00EADE", // Turquesa
+    "#3185F7", // Azul
+    "#3a5070", // Azul oscuro
+    "#FF9500", // Naranja brillante (nuevo)
+    "#9B59B6", // Púrpura (nuevo)
   ];
   
   const data = prizes.map((prize, index) => ({
@@ -256,10 +277,23 @@ const Index = () => {
     style: { fontSize: 24, fontWeight: "bold" },
   }));
 
+  // 3D effect styles for the wheel
+  const wheelContainerStyle = {
+    position: "relative" as const,
+    perspective: "1000px",
+    transformStyle: "preserve-3d" as const,
+    transition: "transform 0.5s ease",
+  };
+
+  const wheelStyle = {
+    transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
+    boxShadow: "0 20px 30px rgba(0, 0, 0, 0.4)",
+    borderRadius: "50%",
+    transition: "transform 0.3s ease",
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Removed the Ver Ganadores button here */}
-      
       <div className="grid md:grid-cols-2 gap-8">
         <div className="glass rounded-xl p-6 space-y-6 h-fit ">
           <h2 className="text-2xl font-bold text-center mb-6 text-white  ">
@@ -276,7 +310,7 @@ const Index = () => {
                 onChange={(e) => setName(e.target.value)}
                 className="bg-white/50"
                 placeholder="Ingrese nombre completo"
-                disabled={isSubmitting || mustSpin}
+                disabled={isSubmitting || (mustSpin && !allowRespin)}
               />
             </div>
             <div className="space-y-2 text-white"  >
@@ -290,15 +324,15 @@ const Index = () => {
                 className="bg-white/50"
                 placeholder="Ingrese DNI"
                 maxLength={8}
-                disabled={isSubmitting || mustSpin}
+                disabled={isSubmitting || (mustSpin && !allowRespin)}
               />
             </div>
             <Button
               type="submit"
               className="w-full"
-              disabled={isSubmitting || mustSpin}
+              disabled={isSubmitting || (mustSpin && !allowRespin)}
             >
-              {isSubmitting ? "Procesando..." : "Registrar y Girar"}
+              {isSubmitting ? "Procesando..." : allowRespin ? "¡Vuelve a Girar!" : "Registrar y Girar"}
             </Button>
           </form>
 
@@ -338,31 +372,47 @@ const Index = () => {
         </div>
 
         <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-black">
-          <div className="mb-6">
-            <Wheel
-              mustStartSpinning={mustSpin}
-              prizeNumber={prizeNumber}
-              data={data}
-              onStopSpinning={handleStopSpinning}
-              textColors={["#000000"]}
-              backgroundColors={colors}
-              outerBorderColor="#000000"
-              radiusLineColor="#000000"
-              radiusLineWidth={4}
-              fontSize={24}
-            />
+          <div className="mb-6" style={wheelContainerStyle}>
+            <div 
+              style={wheelStyle}
+              className="relative hover:scale-105 transition-transform"
+            >
+              <Wheel
+                mustStartSpinning={mustSpin}
+                prizeNumber={prizeNumber}
+                data={data}
+                onStopSpinning={handleStopSpinning}
+                textColors={["#000000"]}
+                backgroundColors={colors}
+                outerBorderColor="#000000"
+                outerBorderWidth={6}
+                innerBorderColor="#000000"
+                innerBorderWidth={20}
+                radiusLineColor="#000000"
+                radiusLineWidth={4}
+                fontSize={24}
+                perpendicularText={true}
+                textDistance={85}
+              />
+              {/* 3D decorative elements */}
+              <div className="absolute inset-0 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)] pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-20 pointer-events-none"></div>
+            </div>
           </div>
-          <div className="w-full max-w-md mt-6 ">
+          <div className="w-full max-w-md mt-6">
             <h3 className="text-xl font-bold mb-4">Premios:</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-2">
               {prizes.map((prize, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 p-3 rounded-lg "
-                  style={{ backgroundColor: colors[index] }} 
+                  className="flex items-center gap-2 p-3 rounded-lg shadow-md transform transition-transform hover:scale-105"
+                  style={{
+                    backgroundColor: colors[index % colors.length],
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  }}
                 >
                   <span className="font-bold text-lg">{prize.number}.</span>
-                  <span>{prize.option}</span>
+                  <span className="text-sm md:text-base font-medium">{prize.option}</span>
                 </li>
               ))}
             </ul>

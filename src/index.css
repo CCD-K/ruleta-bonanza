@@ -35,7 +35,7 @@
   body {
     @apply bg-background text-foreground min-h-screen;
     
-    background-image: url('https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Fondos/VALIDACION%202%20-%20CCD.png') !important;
+    background-image: url('https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/FONDO%20RULETA.jpg') !important;
     background-size: cover !important;
     background-position: center !important;
   }

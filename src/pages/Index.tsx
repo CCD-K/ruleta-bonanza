@@ -260,7 +260,7 @@ const Index = () => {
     // Redirect to WhatsApp with a pre-filled message
     const phoneNumber = "51908841254"; // Replace with your business phone number
     const message = encodeURIComponent(
-      `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi premio.`
+      `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi Beneficio.`
     );
     
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
@@ -272,8 +272,14 @@ const Index = () => {
     setShowConfirmation(false);
   };
   
+
+  //const gradient = `radial-gradient(circle, ${colors.join(", ")})`;
+
+  
   const colors = [
-    "#3185F7", // Azul
+
+
+    "#230424", // Azul
     "#00EADE", // Turquesa
     "#3a5070", // Azul oscuro
     "#3185F7", // Azul
@@ -283,7 +289,7 @@ const Index = () => {
     "#3185F7", // Azul
     "#3a5070", // Azul oscuro
     "#FF9500", // Naranja brillante
-    "#9B59B6", // Púrpura
+    "rgba(35, 4, 36, 0.7)", // Púrpura
   ];
   
   const data = prizes.map((prize, index) => ({
@@ -302,7 +308,7 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 20px 30px rgba(0, 0, 0, 0.4)",
+    boxShadow: "0 20px 30px #00d1e066",
     borderRadius: "50%",
     transition: "transform 0.3s ease",
   };
@@ -380,17 +386,17 @@ const Index = () => {
 
           <div className="grid grid-cols-3 gap-4 items-center justify-center mx-auto">
             <img
-              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-cdidp-white.svg"
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/kevin3.png"
               alt="Centro de Capacitación y Desarrollo"
               className="w-[9rem] transform transition-transform duration-300 group-hover:scale-110"
             />
             <img
-              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-pmi-white.svg"
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/kevin2.png"
               alt="Centro de Capacitación y Desarrollo"
               className="w-[9rem] transform transition-transform duration-300 group-hover:scale-110"
             />
             <img
-              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/acreditacion-cdd-white5.svg"
+              src="https://pub-9d2abfa175714e64aed33b90722a9fd5.r2.dev/Multimedia/Imagen/Ccd/Logos/kevin.png"
               alt="Centro de Capacitación y Desarrollo"
               className="w-[20rem] transform transition-transform duration-300 group-hover:scale-110"
             />
@@ -409,13 +415,13 @@ const Index = () => {
                 prizeNumber={prizeNumber}
                 data={data}
                 onStopSpinning={handleStopSpinning}
-                textColors={["#000000"]}
+                textColors={["#ffffff"]}
                 backgroundColors={colors}
-                outerBorderColor="#000000"
+                outerBorderColor="#c50063"
                 outerBorderWidth={6}
-                innerBorderColor="#000000"
+                innerBorderColor="#0c97c2"
                 innerBorderWidth={20}
-                radiusLineColor="#000000"
+                radiusLineColor="#810ece"
                 radiusLineWidth={4}
                 fontSize={24}
                 perpendicularText={true}
@@ -436,11 +442,11 @@ const Index = () => {
                   className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
                     // backgroundColor: colors[index % colors.length],
-                    // boxShadow: "0 4px 6px rgba(0, 119, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                    boxShadow: "0 4px 6px rgba(25, 152, 156, 0.603), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   }}
                 >
                   
-                  <span className="font-bold text-lg">{prize.number}.</span>
+                  <span className="font-bold text-sm">{prize.number}.</span>
                   <span className="text-sm md:text-base font-medium">{prize.option}</span>
                 </li>
               ))}

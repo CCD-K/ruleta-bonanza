@@ -404,6 +404,7 @@ const Index = () => {
               className="relative hover:scale-105 transition-transform"
             >
               <Wheel
+                
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
                 data={data}
@@ -419,6 +420,7 @@ const Index = () => {
                 fontSize={24}
                 perpendicularText={true}
                 textDistance={85}
+
               />
               {/* 3D decorative elements */}
               <div className="absolute inset-0 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)] pointer-events-none"></div>

@@ -40,8 +40,6 @@ const prizes = [
   { option: "VUELVE A GIRAR", number: 7 },
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTES", number: 9 },
-  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 10 },
-  { option: "1 HORA DE CONSULTORÍA PERSONALIZADA", number: 11 },
 ];
 
 const Index = () => {
@@ -401,7 +399,7 @@ const Index = () => {
           </div>
           <div className="w-full max-w-md mt-6">
             <h3 className="text-xl font-bold mb-4">Premios:</h3>
-            <ul className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+            <ul className="space-y-2 grid grid-cols-1  gap-2">
               {prizes.map((prize, index) => (
                 <li
                   key={index}
@@ -411,6 +409,7 @@ const Index = () => {
                     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   }}
                 >
+                  
                   <span className="font-bold text-lg">{prize.number}.</span>
                   <span className="text-sm md:text-base font-medium">{prize.option}</span>
                 </li>

@@ -40,6 +40,8 @@ const prizes = [
   { option: "VUELVE A GIRAR", number: 7 },
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTES", number: 9 },
+  { option: "BECA COMPLETA PARA UN DIPLOMADO", number: 10 },
+  { option: "ASESORIA PERSONALIZADA DE 1 HORA", number: 11 },
 ];
 
 const Index = () => {
@@ -53,6 +55,7 @@ const Index = () => {
   const [lastWinner, setLastWinner] = useState<DisplayBeneficiary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowRespin, setAllowRespin] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -170,6 +173,7 @@ const Index = () => {
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
       setAllowRespin(false); // Reset the respin flag
+      setShowConfirmation(false); // Reset confirmation state
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
@@ -235,16 +239,13 @@ const Index = () => {
       } else {
         await saveBeneficiary(beneficiaryWithPrize);
         setLastWinner(beneficiaryWithPrize);
+        setShowConfirmation(true); // Show confirmation button only after winning a real prize
 
         toast({
           title: "¡Felicitaciones!",
           description: `Has ganado: ${prizeWon}`,
           variant: "default",
         });
-
-        setName("");
-        setDni("");
-        setCurrentBeneficiary(null);
       }
     } catch (error) {
       toast({
@@ -253,6 +254,24 @@ const Index = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleConfirmation = () => {
+    if (!currentBeneficiary) return;
+    
+    // Redirect to WhatsApp with a pre-filled message
+    const phoneNumber = "51982271488"; // Replace with your business phone number
+    const message = encodeURIComponent(
+      `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi premio.`
+    );
+    
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+    
+    // Reset form after confirmation
+    setName("");
+    setDni("");
+    setCurrentBeneficiary(null);
+    setShowConfirmation(false);
   };
   
   const colors = [
@@ -265,8 +284,8 @@ const Index = () => {
     "#00EADE", // Turquesa
     "#3185F7", // Azul
     "#3a5070", // Azul oscuro
-    "#FF9500", // Naranja brillante (nuevo)
-    "#9B59B6", // Púrpura (nuevo)
+    "#FF9500", // Naranja brillante
+    "#9B59B6", // Púrpura
   ];
   
   const data = prizes.map((prize, index) => ({
@@ -333,6 +352,17 @@ const Index = () => {
               {isSubmitting ? "Procesando..." : allowRespin ? "¡Vuelve a Girar!" : "Registrar y Girar"}
             </Button>
           </form>
+
+          {showConfirmation && (
+            <div className="mt-4 animate-pulse">
+              <Button 
+                onClick={handleConfirmation} 
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold"
+              >
+                CONFIRMAR Y CONTACTAR POR WHATSAPP
+              </Button>
+            </div>
+          )}
 
           {lastWinner && (
             <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">

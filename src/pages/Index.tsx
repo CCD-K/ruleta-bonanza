@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -105,7 +104,6 @@ const Index = () => {
 
   const checkExistingDNI = async (dni: string) => {
     try {
-      // Check both tables for existing DNI
       const [beneficiaryResult, prizeResult] = await Promise.all([
         supabase
           .from("beneficiaries")
@@ -146,7 +144,6 @@ const Index = () => {
     try {
       setIsSubmitting(true);
 
-      // Skip the DNI check if we're allowing a respin
       if (!allowRespin) {
         const exists = await checkExistingDNI(dni);
         if (exists) {
@@ -170,8 +167,8 @@ const Index = () => {
       const newPrizeNumber = Math.floor(Math.random() * prizes.length);
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
-      setAllowRespin(false); // Reset the respin flag
-      setShowConfirmation(false); // Reset confirmation state
+      setAllowRespin(false);
+      setShowConfirmation(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
@@ -186,7 +183,6 @@ const Index = () => {
 
   const saveBeneficiary = async (beneficiary: DisplayBeneficiary) => {
     try {
-      // Insert into both tables
       const beneficiaryData = {
         name: beneficiary.name,
         dni: beneficiary.dni,
@@ -226,9 +222,8 @@ const Index = () => {
         prize: prizeWon,
       };
 
-      // Check if the prize is "VUELVE A GIRAR"
       if (prizes[prizeNumber].number === 7) {
-        setAllowRespin(true); // Enable respinning with the same data
+        setAllowRespin(true);
         toast({
           title: "¡Vuelve a girar!",
           description: "Tienes otra oportunidad, puedes volver a girar",
@@ -237,8 +232,7 @@ const Index = () => {
       } else {
         await saveBeneficiary(beneficiaryWithPrize);
         setLastWinner(beneficiaryWithPrize);
-        setShowConfirmation(true); // Show confirmation button only after winning a real prize
-
+        setShowConfirmation(true);
         toast({
           title: "¡Felicitaciones!",
           description: `Has ganado: ${prizeWon}`,
@@ -257,28 +251,20 @@ const Index = () => {
   const handleConfirmation = () => {
     if (!currentBeneficiary) return;
     
-    // Redirect to WhatsApp with a pre-filled message
-    const phoneNumber = "51908841254"; // Replace with your business phone number
+    const phoneNumber = "51908841254";
     const message = encodeURIComponent(
-      `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi Beneficio.`
+      `��Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi Beneficio.`
     );
     
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     
-    // Reset form after confirmation
     setName("");
     setDni("");
     setCurrentBeneficiary(null);
     setShowConfirmation(false);
   };
-  
 
-  //const gradient = `radial-gradient(circle, ${colors.join(", ")})`;
-
-  
   const colors = [
-
-
     "#230424", // Azul
     "#00EADE", // Turquesa
     "#3a5070", // Azul oscuro
@@ -291,14 +277,15 @@ const Index = () => {
     "#FF9500", // Naranja brillante
     "rgba(35, 4, 36, 0.7)", // Púrpura
   ];
-  
+
+  const radialGradient = "radial-gradient(circle, #8B5CF6 0%, #1A1F2C 100%)";
+
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
     style: { fontSize: 24, fontWeight: "bold" },
   }));
 
-  // 3D effect styles for the wheel
   const wheelContainerStyle = {
     position: "relative" as const,
     perspective: "1000px",
@@ -311,6 +298,7 @@ const Index = () => {
     boxShadow: "0 20px 30px #00d1e066",
     borderRadius: "50%",
     transition: "transform 0.3s ease",
+    background: radialGradient,
   };
 
   return (
@@ -410,7 +398,6 @@ const Index = () => {
               className="relative hover:scale-105 transition-transform"
             >
               <Wheel
-                
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
                 data={data}
@@ -426,9 +413,7 @@ const Index = () => {
                 fontSize={24}
                 perpendicularText={true}
                 textDistance={85}
-
               />
-              {/* 3D decorative elements */}
               <div className="absolute inset-0 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)] pointer-events-none"></div>
               <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-20 pointer-events-none"></div>
             </div>
@@ -445,7 +430,6 @@ const Index = () => {
                     boxShadow: "0 4px 6px rgba(25, 152, 156, 0.603), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   }}
                 >
-                  
                   <span className="font-bold text-sm">{prize.number}.</span>
                   <span className="text-sm md:text-base font-medium">{prize.option}</span>
                 </li>

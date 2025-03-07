@@ -433,10 +433,10 @@ const Index = () => {
               {prizes.map((prize, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 p-3 rounded-lg shadow-md transform transition-transform hover:scale-105"
+                  className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
-                    backgroundColor: colors[index % colors.length],
-                    boxShadow: "0 4px 6px rgba(21, 255, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                    // backgroundColor: colors[index % colors.length],
+                    // boxShadow: "0 4px 6px rgba(0, 119, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   }}
                 >
                   

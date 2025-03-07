@@ -265,25 +265,23 @@ const Index = () => {
   };
 
   const colors = [
-    "#230424", // Azul
-    "#00EADE", // Turquesa
-    "#3a5070", // Azul oscuro
-    "#3185F7", // Azul
-    "#00EADE", // Turquesa
-    "#3a5070", // Azul oscuro
-    "#00EADE", // Turquesa
-    "#3185F7", // Azul
-    "#3a5070", // Azul oscuro
-    "#FF9500", // Naranja brillante
-    "rgba(35, 4, 36, 0.7)", // Púrpura
+    "#0093ad", // Azul
+    "#00eade7a", // Turquesa
+    "#41accca0", // Azul oscuro
+    "#508fe752", // Azul
+    "#00eade7a", // Turquesa
+    "#41accca0", // Azul oscuro
+    "#00eade7a", // Turquesa
+    "#41accca0", // Azul
+    "#41accca0", //
   ];
 
-  const radialGradient = "radial-gradient(circle, #8B5CF6 0%, #1A1F2C 100%)";
+  const radialGradient = "radial-gradient(circle, #41accca0 0%,#41accca0  10%)";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { fontSize: 24, fontWeight: "bold" },
+    style: { fontSize: 26, fontWeight: "bold" },
   }));
 
   const wheelContainerStyle = {
@@ -295,7 +293,7 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 20px 30px #00d1e066",
+    boxShadow: "0 20px 30px #00ffff",
     borderRadius: "50%",
     transition: "transform 0.3s ease",
     background: radialGradient,
@@ -404,13 +402,13 @@ const Index = () => {
                 onStopSpinning={handleStopSpinning}
                 textColors={["#ffffff"]}
                 backgroundColors={colors}
-                outerBorderColor="#c50063"
+                outerBorderColor="#ffffff"
                 outerBorderWidth={6}
-                innerBorderColor="#0c97c2"
+                innerBorderColor="#0cc2b9"
                 innerBorderWidth={20}
-                radiusLineColor="#810ece"
+                radiusLineColor="#ffffff"
                 radiusLineWidth={4}
-                fontSize={24}
+                fontSize={38}
                 perpendicularText={true}
                 textDistance={85}
               />

@@ -39,7 +39,7 @@ const prizes = [
   { option: "ACCESO A UN AÑO AL AULA VIRTUAL", number: 6 },
   { option: "VUELVE A GIRAR", number: 7 },
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
-  { option: "PERDISTES", number: 9 },
+  { option: "PERDISTE", number: 9 },
 ];
 
 const Index = () => {
@@ -428,7 +428,7 @@ const Index = () => {
             </div>
           </div>
           <div className="w-full max-w-md mt-6">
-            <h3 className="text-xl font-bold mb-4">Premios:</h3>
+            <h3 className="text-xl   font-bold mb-5 text-white">Premios por Aquirir un curso:</h3>
             <ul className="space-y-2 grid grid-cols-1  gap-2">
               {prizes.map((prize, index) => (
                 <li
@@ -436,7 +436,7 @@ const Index = () => {
                   className="flex items-center gap-2 p-3 rounded-lg shadow-md transform transition-transform hover:scale-105"
                   style={{
                     backgroundColor: colors[index % colors.length],
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                    boxShadow: "0 4px 6px rgba(21, 255, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   }}
                 >
                   

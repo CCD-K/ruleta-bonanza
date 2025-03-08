@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -235,6 +234,15 @@ const Index = () => {
         toast({
           title: "¡Vuelve a girar!",
           description: "Tienes otra oportunidad, puedes volver a girar",
+          variant: "default",
+        });
+      } else if (prizes[prizeNumber].number === 9) {
+        await saveBeneficiary(beneficiaryWithPrize);
+        setLastWinner(beneficiaryWithPrize);
+        setShowConfirmation(true);
+        toast({
+          title: "No te desanimes",
+          description: "Aun puedes potenciar tu perfil profesional",
           variant: "default",
         });
       } else {

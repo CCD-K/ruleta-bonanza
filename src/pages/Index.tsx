@@ -265,23 +265,23 @@ const Index = () => {
   };
 
   const colors = [
-    "#0093ad", // Azul
     "#00eade7a", // Turquesa
-    "#41accca0", // Azul oscuro
-    "#508fe752", // Azul
+    "#41accca0", 
     "#00eade7a", // Turquesa
-    "#41accca0", // Azul oscuro
+    "#41accca0", 
     "#00eade7a", // Turquesa
-    "#41accca0", // Azul
-    "#41accca0", //
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#8780c246", //
   ];
 
-  const radialGradient = "radial-gradient(circle, #41accca0 0%,#41accca0  10%)";
+  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { fontSize: 26, fontWeight: "bold" },
+    style: { fontSize: 30, fontWeight: "bold" },
   }));
 
   const wheelContainerStyle = {
@@ -293,8 +293,8 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 20px 30px #00ffff",
-    borderRadius: "50%",
+    boxShadow: "0 10px 30px #00d9ff",
+    borderRadius: "15%",
     transition: "transform 0.3s ease",
     background: radialGradient,
   };
@@ -389,7 +389,7 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center text-black">
+        <div className="glass rounded-xl p-6 flex flex-col items-center justify-center ">
           <div className="mb-6" style={wheelContainerStyle}>
             <div 
               style={wheelStyle}
@@ -404,20 +404,20 @@ const Index = () => {
                 backgroundColors={colors}
                 outerBorderColor="#ffffff"
                 outerBorderWidth={6}
-                innerBorderColor="#0cc2b9"
+                innerBorderColor="#00ffea"
                 innerBorderWidth={20}
                 radiusLineColor="#ffffff"
                 radiusLineWidth={4}
                 fontSize={38}
                 perpendicularText={true}
-                textDistance={85}
+                textDistance={75}
               />
-              <div className="absolute inset-0 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)] pointer-events-none"></div>
-              <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-20 pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-full shadow-[0_0_0.2px_rgba(255, 0, 0, 0.3)] pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-15 pointer-events-none"></div>
             </div>
           </div>
           <div className="w-full max-w-md mt-6">
-            <h3 className="text-xl   font-bold mb-5 text-white">Premios por Aquirir un curso:</h3>
+            <h3 className="text-xl   font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
             <ul className="space-y-2 grid grid-cols-1  gap-2">
               {prizes.map((prize, index) => (
                 <li
@@ -425,7 +425,7 @@ const Index = () => {
                   className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
                     // backgroundColor: colors[index % colors.length],
-                    boxShadow: "0 4px 6px rgba(25, 152, 156, 0.603), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                    boxShadow: "0 4px 6px rgba(0, 255, 255, 0.603), inset 0 5px 0 rgba(90, 247, 142, 0.3)",
                   }}
                 >
                   <span className="font-bold text-sm">{prize.number}.</span>

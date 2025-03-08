@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,9 @@ const prizes = [
   { option: "DOS CURSOS DE REGALO (NO INCLUYE CERTIFICADO)", number: 8 },
   { option: "PERDISTE", number: 9 },
 ];
+
+// Define the allowed prize numbers
+const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
   const [name, setName] = useState("");
@@ -164,7 +168,11 @@ const Index = () => {
       };
 
       setCurrentBeneficiary(newBeneficiary);
-      const newPrizeNumber = Math.floor(Math.random() * prizes.length);
+      
+      // Get a random index from the allowed prize numbers array
+      const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
+      const newPrizeNumber = allowedPrizeNumbers[randomIndex];
+      
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
       setAllowRespin(false);
@@ -411,6 +419,7 @@ const Index = () => {
                 fontSize={38}
                 perpendicularText={true}
                 textDistance={75}
+                pointerProps={{ style: { fill: "#FFFFFF" } }}
               />
               <div className="absolute inset-0 rounded-full shadow-[0_0_0.2px_rgba(255, 0, 0, 0.3)] pointer-events-none"></div>
               <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-15 pointer-events-none"></div>
@@ -424,7 +433,6 @@ const Index = () => {
                   key={index}
                   className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
-                    // backgroundColor: colors[index % colors.length],
                     boxShadow: "0 4px 6px rgba(0, 255, 255, 0.603), inset 0 5px 0 rgba(90, 247, 142, 0.3)",
                   }}
                 >

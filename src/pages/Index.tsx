@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -295,7 +296,12 @@ const Index = () => {
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { fontSize: 30, fontWeight: "bold" },
+    style: { 
+      fontSize: 30, 
+      fontWeight: "bold",
+      color: "#000000", // Black color for the numbers
+      textShadow: "1px 1px 2px rgba(255,255,255,0.5)" // Adding subtle text shadow
+    },
   }));
 
   const wheelContainerStyle = {

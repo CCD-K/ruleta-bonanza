@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -42,6 +41,7 @@ const prizes = [
   { option: "PERDISTE", number: 9 },
 ];
 
+// Define the allowed prize numbers
 const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
@@ -168,6 +168,7 @@ const Index = () => {
 
       setCurrentBeneficiary(newBeneficiary);
       
+      // Get a random index from the allowed prize numbers array
       const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
       const newPrizeNumber = allowedPrizeNumbers[randomIndex];
       
@@ -291,17 +292,12 @@ const Index = () => {
     "#8780c246", //
   ];
 
-  const wheelBackgroundColor = "#ffffff";
+  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { 
-      fontSize: 30, 
-      fontWeight: "bold",
-      color: "#000000", // Black color for the numbers
-      textShadow: "1px 1px 2px rgba(255,255,255,0.5)" // Adding subtle text shadow
-    },
+    style: { fontSize: 30, fontWeight: "bold" },
   }));
 
   const wheelContainerStyle = {
@@ -313,10 +309,10 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+    boxShadow: "0 10px 30px #00d9ff",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: wheelBackgroundColor,
+    background: radialGradient,
   };
 
   return (
@@ -413,7 +409,7 @@ const Index = () => {
           <div className="mb-6" style={wheelContainerStyle}>
             <div 
               style={wheelStyle}
-              className="hover:scale-105 transition-transform"
+              className="relative hover:scale-105 transition-transform"
             >
               <Wheel
                 mustStartSpinning={mustSpin}

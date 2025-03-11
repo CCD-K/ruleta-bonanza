@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -292,7 +293,8 @@ const Index = () => {
     "#8780c246", //
   ];
 
-  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
+  // Changed to remove the blue/cyan gradient
+  const radialGradient = "radial-gradient(circle, #ffffff80 80%, #ffffff80 100%)";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
@@ -309,7 +311,8 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 10px 30px #00d9ff",
+    // Removed the cyan box-shadow
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
     background: radialGradient,

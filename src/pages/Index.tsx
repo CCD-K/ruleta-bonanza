@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -42,7 +41,6 @@ const prizes = [
   { option: "PERDISTE", number: 9 },
 ];
 
-// Define the allowed prize numbers
 const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
@@ -169,7 +167,6 @@ const Index = () => {
 
       setCurrentBeneficiary(newBeneficiary);
       
-      // Get a random index from the allowed prize numbers array
       const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
       const newPrizeNumber = allowedPrizeNumbers[randomIndex];
       
@@ -293,8 +290,7 @@ const Index = () => {
     "#8780c246", //
   ];
 
-  // Changed to remove the blue/cyan gradient
-  const radialGradient = "radial-gradient(circle, #ffffff80 80%, #ffffff80 100%)";
+  const wheelBackgroundColor = "#ffffff";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
@@ -311,11 +307,10 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    // Removed the cyan box-shadow
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: radialGradient,
+    background: wheelBackgroundColor,
   };
 
   return (

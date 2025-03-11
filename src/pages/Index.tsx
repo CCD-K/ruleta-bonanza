@@ -292,8 +292,6 @@ const Index = () => {
     "#8780c246", //
   ];
 
-  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
-
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
@@ -312,7 +310,7 @@ const Index = () => {
     boxShadow: "0 10px 30px #00d9ff",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: radialGradient,
+    background: "#ffffff",
   };
 
   return (

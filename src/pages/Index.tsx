@@ -413,7 +413,7 @@ const Index = () => {
           <div className="mb-6" style={wheelContainerStyle}>
             <div 
               style={wheelStyle}
-              className="relative hover:scale-105 transition-transform"
+              className="hover:scale-105 transition-transform"
             >
               <Wheel
                 mustStartSpinning={mustSpin}

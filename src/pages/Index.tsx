@@ -281,21 +281,23 @@ const Index = () => {
   };
 
   const colors = [
-    "#FF9AA2", // Light pink
-    "#FFB7B2", // Salmon
-    "#FFDAC1", // Light peach
-    "#E2F0CB", // Light green
-    "#B5EAD7", // Mint
-    "#C7CEEA", // Light blue
-    "#F0E6EF", // Lavender
-    "#D4F0F0", // Light cyan
-    "#FFC3A0", // Light orange
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#8780c246", //
   ];
+
+  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { fontSize: 30, fontWeight: "bold", color: "#333333", textShadow: "1px 1px 2px rgba(255, 255, 255, 0.8)" },
+    style: { fontSize: 30, fontWeight: "bold" },
   }));
 
   const wheelContainerStyle = {
@@ -310,7 +312,7 @@ const Index = () => {
     boxShadow: "0 10px 30px #00d9ff",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+    background: radialGradient,
   };
 
   return (
@@ -414,7 +416,7 @@ const Index = () => {
                 prizeNumber={prizeNumber}
                 data={data}
                 onStopSpinning={handleStopSpinning}
-                textColors={["#333333"]}
+                textColors={["#ffffff"]}
                 backgroundColors={colors}
                 outerBorderColor="#ffffff"
                 outerBorderWidth={6}

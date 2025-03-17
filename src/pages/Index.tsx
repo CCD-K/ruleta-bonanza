@@ -41,7 +41,6 @@ const prizes = [
   { option: "PERDISTE", number: 9 },
 ];
 
-// Define the allowed prize numbers
 const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
@@ -168,7 +167,6 @@ const Index = () => {
 
       setCurrentBeneficiary(newBeneficiary);
       
-      // Get a random index from the allowed prize numbers array
       const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
       const newPrizeNumber = allowedPrizeNumbers[randomIndex];
       
@@ -280,26 +278,6 @@ const Index = () => {
     setShowConfirmation(false);
   };
 
-  const colors = [
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#8780c246", //
-  ];
-
-  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
-
-  const data = prizes.map((prize, index) => ({
-    option: prize.number.toString(),
-    backgroundColor: colors[index % colors.length],
-    style: { fontSize: 30, fontWeight: "bold" },
-  }));
-
   const wheelContainerStyle = {
     position: "relative" as const,
     perspective: "1000px",
@@ -312,8 +290,30 @@ const Index = () => {
     boxShadow: "0 10px 30px #00d9ff",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: radialGradient,
+    background: "white",
   };
+
+  const colors = [
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#00eade7a", // Turquesa
+    "#41accca0", 
+    "#8780c246", //
+  ];
+
+  const data = prizes.map((prize, index) => ({
+    option: prize.number.toString(),
+    backgroundColor: colors[index % colors.length],
+    style: { 
+      fontSize: 38, 
+      fontWeight: "bold",
+      textShadow: "none",
+    },
+  }));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -429,8 +429,6 @@ const Index = () => {
                 textDistance={75}
                 pointerProps={{ style: { fill: "#FFFFFF" } }}
               />
-              <div className="absolute inset-0 rounded-full shadow-[0_0_0.2px_rgba(255, 0, 0, 0.3)] pointer-events-none"></div>
-              <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-15 pointer-events-none"></div>
             </div>
           </div>
           <div className="w-full max-w-md mt-6">

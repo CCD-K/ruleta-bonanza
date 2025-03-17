@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -287,7 +288,7 @@ const Index = () => {
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 10px 30px #00d9ff",
+    boxShadow: "none", // Removed the shadow
     borderRadius: "15%",
     transition: "transform 0.3s ease",
     background: "white",
@@ -371,13 +372,13 @@ const Index = () => {
           )}
 
           {lastWinner && (
-            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">
+            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border-0 shadow-none animate-fade-in">
               <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
               <div className="space-y-2">
                 <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
                 <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
                 <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
-                <div className="mt-4 py-3 px-4  bg-yellow-400/80 rounded-lg border border-primary/20">
+                <div className="mt-4 py-3 px-4 bg-yellow-400/80 rounded-lg border-0">
                   <p className="font-bold text-lg text-white text-center">
                     {lastWinner.prize}
                   </p>
@@ -432,12 +433,12 @@ const Index = () => {
             </div>
           </div>
           <div className="w-full max-w-md mt-6">
-            <h3 className="text-xl   font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
-            <ul className="space-y-2 grid grid-cols-1  gap-2">
+            <h3 className="text-xl font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
+            <ul className="space-y-2 grid grid-cols-1 gap-2">
               {prizes.map((prize, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
+                  className="flex items-center gap-2 p-3 text-white rounded-lg shadow-none border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
                     boxShadow: "0 4px 6px rgba(0, 255, 255, 0.603), inset 0 5px 0 rgba(90, 247, 142, 0.3)",
                   }}

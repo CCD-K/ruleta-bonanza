@@ -289,17 +289,17 @@ const Index = () => {
   }));
 
   const wheelContainerStyle = {
-    position: "relative" as const,
-    perspective: "1000px",
-    transformStyle: "preserve-3d" as const,
+   position: "relative" as const,
+   perspective: "1000px",
+   transformStyle: "preserve-2d" as const,
     transition: "transform 0.5s ease",
   };
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
     boxShadow: "0 10px 30px #00d9ff",
-    borderRadius: "15%",
-    transition: "transform 0.3s ease",
+    borderRadius: "150%",
+    transition: "transform 0.2s ease",
     background: "transparent",
   };
 
@@ -408,7 +408,7 @@ const Index = () => {
                 backgroundColors={colors}
                 outerBorderColor="#ffffff"
                 outerBorderWidth={6}
-                innerBorderColor="#00ffea"
+                innerBorderColor="#00ffeaa6"
                 innerBorderWidth={20}
                 radiusLineColor="#ffffff"
                 radiusLineWidth={4}
@@ -433,7 +433,7 @@ const Index = () => {
                   }}
                 >
                   <span className="font-bold text-sm">{prize.number}.</span>
-                  <span className="text-sm md:text-base font-medium">{prize.option}</span>
+                  <span className="text-sm md:text-base font">{prize.option}</span>
                 </li>
               ))}
             </ul>

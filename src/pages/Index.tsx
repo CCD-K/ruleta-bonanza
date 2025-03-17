@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -42,6 +41,7 @@ const prizes = [
   { option: "PERDISTE", number: 9 },
 ];
 
+// Define the allowed prize numbers
 const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
@@ -168,6 +168,7 @@ const Index = () => {
 
       setCurrentBeneficiary(newBeneficiary);
       
+      // Get a random index from the allowed prize numbers array
       const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
       const newPrizeNumber = allowedPrizeNumbers[randomIndex];
       
@@ -279,21 +280,6 @@ const Index = () => {
     setShowConfirmation(false);
   };
 
-  const wheelContainerStyle = {
-    position: "relative" as const,
-    perspective: "1000px",
-    transformStyle: "preserve-3d" as const,
-    transition: "transform 0.5s ease",
-  };
-
-  const wheelStyle = {
-    transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "none", // Removed the shadow
-    borderRadius: "15%",
-    transition: "transform 0.3s ease",
-    background: "white",
-  };
-
   const colors = [
     "#00eade7a", // Turquesa
     "#41accca0", 
@@ -306,15 +292,28 @@ const Index = () => {
     "#8780c246", //
   ];
 
+  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
+
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: colors[index % colors.length],
-    style: { 
-      fontSize: 38, 
-      fontWeight: "bold",
-      textShadow: "none",
-    },
+    style: { fontSize: 30, fontWeight: "bold" },
   }));
+
+  const wheelContainerStyle = {
+    position: "relative" as const,
+    perspective: "1000px",
+    transformStyle: "preserve-3d" as const,
+    transition: "transform 0.5s ease",
+  };
+
+  const wheelStyle = {
+    transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
+    boxShadow: "0 10px 30px #00d9ff",
+    borderRadius: "15%",
+    transition: "transform 0.3s ease",
+    background: radialGradient,
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -372,13 +371,13 @@ const Index = () => {
           )}
 
           {lastWinner && (
-            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border-0 shadow-none animate-fade-in">
+            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">
               <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
               <div className="space-y-2">
                 <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
                 <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
                 <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
-                <div className="mt-4 py-3 px-4 bg-yellow-400/80 rounded-lg border-0">
+                <div className="mt-4 py-3 px-4  bg-yellow-400/80 rounded-lg border border-primary/20">
                   <p className="font-bold text-lg text-white text-center">
                     {lastWinner.prize}
                   </p>
@@ -430,15 +429,17 @@ const Index = () => {
                 textDistance={75}
                 pointerProps={{ style: { fill: "#FFFFFF" } }}
               />
+              <div className="absolute inset-0 rounded-full shadow-[0_0_0.2px_rgba(255, 0, 0, 0.3)] pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-15 pointer-events-none"></div>
             </div>
           </div>
           <div className="w-full max-w-md mt-6">
-            <h3 className="text-xl font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
-            <ul className="space-y-2 grid grid-cols-1 gap-2">
+            <h3 className="text-xl   font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
+            <ul className="space-y-2 grid grid-cols-1  gap-2">
               {prizes.map((prize, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 p-3 text-white rounded-lg shadow-none border-4 border-blue-500 transform transition-transform hover:scale-105"
+                  className="flex items-center gap-2 p-3 text-white rounded-lg shadow-md border-4 border-blue-500 transform transition-transform hover:scale-105"
                   style={{
                     boxShadow: "0 4px 6px rgba(0, 255, 255, 0.603), inset 0 5px 0 rgba(90, 247, 142, 0.3)",
                   }}

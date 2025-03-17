@@ -280,24 +280,12 @@ const Index = () => {
     setShowConfirmation(false);
   };
 
-  const colors = [
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#00eade7a", // Turquesa
-    "#41accca0", 
-    "#8780c246", //
-  ];
-
-  const radialGradient = "radial-gradient(circle, #43c9ebb2 80%,#02f1e69f  100%)";
+  const colors = Array(9).fill("transparent");
 
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
-    backgroundColor: colors[index % colors.length],
-    style: { fontSize: 30, fontWeight: "bold" },
+    backgroundColor: "transparent",
+    style: { fontSize: 30, fontWeight: "bold", color: "black", textShadow: "1px 1px 1px white" },
   }));
 
   const wheelContainerStyle = {
@@ -312,7 +300,7 @@ const Index = () => {
     boxShadow: "0 10px 30px #00d9ff",
     borderRadius: "15%",
     transition: "transform 0.3s ease",
-    background: radialGradient,
+    background: "transparent",
   };
 
   return (
@@ -416,7 +404,7 @@ const Index = () => {
                 prizeNumber={prizeNumber}
                 data={data}
                 onStopSpinning={handleStopSpinning}
-                textColors={["#ffffff"]}
+                textColors={["#000000"]}
                 backgroundColors={colors}
                 outerBorderColor="#ffffff"
                 outerBorderWidth={6}

@@ -139,10 +139,20 @@ const Index = () => {
 
     if (isSubmitting) return;
 
-    if (!name || !dni) {
+    if (!name || !dni || !phoneNumber) {
       toast({
         title: "Error",
         description: "Por favor complete todos los campos obligatorios",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate that phone number contains only numbers
+    if (!/^\d+$/.test(phoneNumber)) {
+      toast({
+        title: "Error",
+        description: "El número de celular debe contener solo números",
         variant: "destructive",
       });
       return;
@@ -167,7 +177,7 @@ const Index = () => {
       const newBeneficiary: DisplayBeneficiary = {
         name: name.trim(),
         dni: dni.trim(),
-        phone_number: phoneNumber.trim() || undefined,
+        phone_number: phoneNumber.trim(),
         date: format(new Date(), "dd/MM/yyyy"),
       };
 
@@ -296,10 +306,10 @@ const Index = () => {
   }));
 
   const wheelContainerStyle = {
-   position: "relative" as const,
-   perspective: "1000px",
-   transformStyle: "preserve-2d" as const,
-   transition: "transform 0.5s ease",
+    position: "relative" as const,
+    perspective: "1000px",
+    transformStyle: "preserve-3d" as const,
+    transition: "transform 0.5s ease",
   };
 
   const wheelStyle = {
@@ -320,7 +330,7 @@ const Index = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2 text-white">
               <Label htmlFor="name" className="">
-                NOMBRE COMPLETO
+                NOMBRE COMPLETO *
               </Label>
               <Input
                 id="name"
@@ -329,11 +339,12 @@ const Index = () => {
                 className="bg-white/50"
                 placeholder="Ingrese nombre completo"
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
+                required
               />
             </div>
             <div className="space-y-2 text-white">
               <Label htmlFor="dni" className="">
-                DNI
+                DNI *
               </Label>
               <Input
                 id="dni"
@@ -343,19 +354,29 @@ const Index = () => {
                 placeholder="Ingrese DNI"
                 maxLength={8}
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
+                required
               />
             </div>
             <div className="space-y-2 text-white">
               <Label htmlFor="phoneNumber" className="">
-                NÚMERO DE CELULAR
+                NÚMERO DE CELULAR *
               </Label>
               <Input
                 id="phoneNumber"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  // Only allow numbers
+                  const value = e.target.value;
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setPhoneNumber(value);
+                  }
+                }}
                 className="bg-white/50"
                 placeholder="Ingrese número de celular"
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
+                required
+                type="tel"
+                inputMode="numeric"
               />
             </div>
             <Button

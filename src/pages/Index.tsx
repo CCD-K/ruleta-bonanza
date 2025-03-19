@@ -148,6 +148,16 @@ const Index = () => {
       return;
     }
 
+    // Validate that DNI contains only numbers
+    if (!/^\d+$/.test(dni)) {
+      toast({
+        title: "Error",
+        description: "El DNI debe contener solo números",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Validate that phone number contains only numbers
     if (!/^\d+$/.test(phoneNumber)) {
       toast({
@@ -349,12 +359,20 @@ const Index = () => {
               <Input
                 id="dni"
                 value={dni}
-                onChange={(e) => setDni(e.target.value)}
+                onChange={(e) => {
+                  // Only allow numbers
+                  const value = e.target.value;
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setDni(value);
+                  }
+                }}
                 className="bg-white/50"
                 placeholder="Ingrese DNI"
                 maxLength={8}
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
                 required
+                type="tel"
+                inputMode="numeric"
               />
             </div>
             <div className="space-y-2 text-white">

@@ -12,6 +12,7 @@ interface Winner {
   id: string;
   name: string;
   dni: string;
+  phone_number?: string;
   date: string;
   prize: string;
   created_at: string;
@@ -103,6 +104,9 @@ const Winners = () => {
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold">{winner.name}</CardTitle>
                   <p className="text-sm text-gray-200">DNI: {winner.dni}</p>
+                  {winner.phone_number && (
+                    <p className="text-sm text-gray-200">Celular: {winner.phone_number}</p>
+                  )}
                   <p className="text-sm text-gray-200">Fecha: {winner.date}</p>
                 </CardHeader>
                 <CardContent>

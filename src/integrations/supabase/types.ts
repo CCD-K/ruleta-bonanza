@@ -16,6 +16,7 @@ export type Database = {
           dni: string
           id: string
           name: string
+          phone_number: string | null
         }
         Insert: {
           created_at?: string
@@ -23,6 +24,7 @@ export type Database = {
           dni: string
           id?: string
           name: string
+          phone_number?: string | null
         }
         Update: {
           created_at?: string
@@ -30,6 +32,7 @@ export type Database = {
           dni?: string
           id?: string
           name?: string
+          phone_number?: string | null
         }
         Relationships: []
       }
@@ -40,6 +43,7 @@ export type Database = {
           dni: string
           id: string
           name: string
+          phone_number: string | null
           prize: string
         }
         Insert: {
@@ -48,6 +52,7 @@ export type Database = {
           dni: string
           id?: string
           name: string
+          phone_number?: string | null
           prize: string
         }
         Update: {
@@ -56,6 +61,7 @@ export type Database = {
           dni?: string
           id?: string
           name?: string
+          phone_number?: string | null
           prize?: string
         }
         Relationships: []

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ interface DisplayBeneficiary {
   id?: string;
   name: string;
   dni: string;
+  phone_number?: string;
   date: string;
   prize?: string;
   created_at?: string;
@@ -21,6 +23,7 @@ interface DBBeneficiary {
   id: string;
   name: string;
   dni: string;
+  phone_number?: string;
   date: string;
   created_at: string;
 }
@@ -47,6 +50,7 @@ const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7
 const Index = () => {
   const [name, setName] = useState("");
   const [dni, setDni] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [beneficiaries, setBeneficiaries] = useState<DisplayBeneficiary[]>([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
@@ -138,7 +142,7 @@ const Index = () => {
     if (!name || !dni) {
       toast({
         title: "Error",
-        description: "Por favor complete todos los campos",
+        description: "Por favor complete todos los campos obligatorios",
         variant: "destructive",
       });
       return;
@@ -163,6 +167,7 @@ const Index = () => {
       const newBeneficiary: DisplayBeneficiary = {
         name: name.trim(),
         dni: dni.trim(),
+        phone_number: phoneNumber.trim() || undefined,
         date: format(new Date(), "dd/MM/yyyy"),
       };
 
@@ -193,6 +198,7 @@ const Index = () => {
       const beneficiaryData = {
         name: beneficiary.name,
         dni: beneficiary.dni,
+        phone_number: beneficiary.phone_number,
         date: beneficiary.date,
       };
 
@@ -269,13 +275,14 @@ const Index = () => {
     
     const phoneNumber = "51908841254";
     const message = encodeURIComponent(
-      `��Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi Beneficio.`
+      `¡Hola! Soy ${currentBeneficiary.name} con DNI ${currentBeneficiary.dni}. He ganado "${lastWinner?.prize}" en la ruleta de premios y me gustaría canjear mi Beneficio.`
     );
     
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     
     setName("");
     setDni("");
+    setPhoneNumber("");
     setCurrentBeneficiary(null);
     setShowConfirmation(false);
   };
@@ -285,19 +292,19 @@ const Index = () => {
   const data = prizes.map((prize, index) => ({
     option: prize.number.toString(),
     backgroundColor: "transparent",
-    style: { fontSize: 30, fontWeight: "bold", color: "black", textShadow: "1px 1px 1px white" },
+    style: { fontSize: 30, fontWeight: "bold", color: "black" },
   }));
 
   const wheelContainerStyle = {
    position: "relative" as const,
    perspective: "1000px",
    transformStyle: "preserve-2d" as const,
-    transition: "transform 0.5s ease",
+   transition: "transform 0.5s ease",
   };
 
   const wheelStyle = {
     transform: mustSpin ? "rotateY(10deg) rotateX(5deg)" : "rotateY(25deg) rotateX(10deg)",
-    boxShadow: "0 10px 30px #00d9ff",
+    boxShadow: "none",
     borderRadius: "150%",
     transition: "transform 0.2s ease",
     background: "transparent",
@@ -324,7 +331,7 @@ const Index = () => {
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
               />
             </div>
-            <div className="space-y-2 text-white"  >
+            <div className="space-y-2 text-white">
               <Label htmlFor="dni" className="">
                 DNI
               </Label>
@@ -335,6 +342,19 @@ const Index = () => {
                 className="bg-white/50"
                 placeholder="Ingrese DNI"
                 maxLength={8}
+                disabled={isSubmitting || (mustSpin && !allowRespin)}
+              />
+            </div>
+            <div className="space-y-2 text-white">
+              <Label htmlFor="phoneNumber" className="">
+                NÚMERO DE CELULAR
+              </Label>
+              <Input
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="bg-white/50"
+                placeholder="Ingrese número de celular"
                 disabled={isSubmitting || (mustSpin && !allowRespin)}
               />
             </div>
@@ -364,6 +384,9 @@ const Index = () => {
               <div className="space-y-2">
                 <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
                 <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
+                {lastWinner.phone_number && (
+                  <p className="text-white"><span className="font-semibold">Celular:</span> {lastWinner.phone_number}</p>
+                )}
                 <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
                 <div className="mt-4 py-3 px-4  bg-yellow-400/80 rounded-lg border border-primary/20">
                   <p className="font-bold text-lg text-white text-center">
@@ -417,7 +440,6 @@ const Index = () => {
                 textDistance={75}
                 pointerProps={{ style: { fill: "#FFFFFF" } }}
               />
-              <div className="absolute inset-0 rounded-full shadow-[0_0_0.2px_rgba(255, 0, 0, 0.3)] pointer-events-none"></div>
               <div className="absolute inset-0 rounded-full ring-4 ring-black ring-opacity-15 pointer-events-none"></div>
             </div>
           </div>

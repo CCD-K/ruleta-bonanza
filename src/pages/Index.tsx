@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import CountdownTimer from "@/components/CountdownTimer";
 
 interface DisplayBeneficiary {
   id?: string;
@@ -44,6 +44,7 @@ const prizes = [
   { option: "PERDISTE", number: 9 },
 ];
 
+// Define the allowed prize numbers
 const allowedPrizeNumbers = [0, 1, 4, 6, 8]; // Corresponds to prizes 1, 2, 5, 7, 9
 
 const Index = () => {
@@ -59,8 +60,6 @@ const Index = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowRespin, setAllowRespin] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showTimer, setShowTimer] = useState(false);
-  const [timerExpired, setTimerExpired] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -149,6 +148,7 @@ const Index = () => {
       return;
     }
 
+    // Validate that DNI contains only numbers
     if (!/^\d+$/.test(dni)) {
       toast({
         title: "Error",
@@ -158,6 +158,7 @@ const Index = () => {
       return;
     }
 
+    // Validate that phone number contains only numbers
     if (!/^\d+$/.test(phoneNumber)) {
       toast({
         title: "Error",
@@ -192,6 +193,7 @@ const Index = () => {
 
       setCurrentBeneficiary(newBeneficiary);
       
+      // Get a random index from the allowed prize numbers array
       const randomIndex = Math.floor(Math.random() * allowedPrizeNumbers.length);
       const newPrizeNumber = allowedPrizeNumbers[randomIndex];
       
@@ -264,7 +266,6 @@ const Index = () => {
         await saveBeneficiary(beneficiaryWithPrize);
         setLastWinner(beneficiaryWithPrize);
         setShowConfirmation(true);
-        setShowTimer(true);
         toast({
           title: "No te desanimes",
           description: "Aun puedes potenciar tu perfil profesional",
@@ -274,7 +275,6 @@ const Index = () => {
         await saveBeneficiary(beneficiaryWithPrize);
         setLastWinner(beneficiaryWithPrize);
         setShowConfirmation(true);
-        setShowTimer(true);
         toast({
           title: "¡Felicitaciones!",
           description: `Has ganado: ${prizeWon}`,
@@ -305,16 +305,6 @@ const Index = () => {
     setPhoneNumber("");
     setCurrentBeneficiary(null);
     setShowConfirmation(false);
-    setShowTimer(false);
-  };
-
-  const handleTimerComplete = () => {
-    setTimerExpired(true);
-    toast({
-      title: "¡Tiempo agotado!",
-      description: "El tiempo para canjear tu premio ha expirado",
-      variant: "destructive",
-    });
   };
 
   const colors = Array(9).fill("transparent");
@@ -370,6 +360,7 @@ const Index = () => {
                 id="dni"
                 value={dni}
                 onChange={(e) => {
+                  // Only allow numbers
                   const value = e.target.value;
                   if (value === '' || /^\d+$/.test(value)) {
                     setDni(value);
@@ -392,6 +383,7 @@ const Index = () => {
                 id="phoneNumber"
                 value={phoneNumber}
                 onChange={(e) => {
+                  // Only allow numbers
                   const value = e.target.value;
                   if (value === '' || /^\d+$/.test(value)) {
                     setPhoneNumber(value);
@@ -415,27 +407,13 @@ const Index = () => {
           </form>
 
           {showConfirmation && (
-            <div className="mt-4 space-y-4">
-              {showTimer && !timerExpired && (
-                <CountdownTimer 
-                  initialMinutes={10} 
-                  onComplete={handleTimerComplete} 
-                />
-              )}
-              
+            <div className="mt-4 animate-pulse">
               <Button 
                 onClick={handleConfirmation} 
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold"
-                disabled={timerExpired}
               >
                 CONFIRMAR Y CONTACTAR POR WHATSAPP
               </Button>
-              
-              {timerExpired && (
-                <div className="p-3 bg-red-500/80 text-white rounded-lg text-center">
-                  ¡Tiempo agotado! Tu oportunidad para canjear ha expirado.
-                </div>
-              )}
             </div>
           )}
 

@@ -6,7 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Download, Calendar } from "lucide-react";
+import * as XLSX from "xlsx";
+import { format } from "date-fns";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface Winner {
   id: string;
@@ -23,6 +32,8 @@ const Winners = () => {
   const [filteredWinners, setFilteredWinners] = useState<Winner[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchDni, setSearchDni] = useState("");
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,15 +41,8 @@ const Winners = () => {
   }, []);
 
   useEffect(() => {
-    if (searchDni.trim() === '') {
-      setFilteredWinners(winners);
-    } else {
-      const filtered = winners.filter(winner => 
-        winner.dni.includes(searchDni.trim())
-      );
-      setFilteredWinners(filtered);
-    }
-  }, [searchDni, winners]);
+    filterWinners();
+  }, [searchDni, winners, startDate, endDate]);
 
   const fetchWinners = async () => {
     try {
@@ -66,8 +70,69 @@ const Winners = () => {
     }
   };
 
+  const filterWinners = () => {
+    let filtered = [...winners];
+    
+    // Filter by DNI
+    if (searchDni.trim() !== '') {
+      filtered = filtered.filter(winner => 
+        winner.dni.includes(searchDni.trim())
+      );
+    }
+    
+    // Filter by date range
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      
+      filtered = filtered.filter(winner => {
+        const winnerDate = new Date(winner.created_at);
+        return winnerDate >= start && winnerDate <= end;
+      });
+    }
+    
+    setFilteredWinners(filtered);
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchDni(e.target.value);
+  };
+
+  const handleExportToExcel = () => {
+    // Create worksheet from filtered data
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredWinners.map((winner) => ({
+        Nombre: winner.name,
+        DNI: winner.dni,
+        Celular: winner.phone_number || "No disponible",
+        Fecha: winner.date,
+        Premio: winner.prize,
+        "Fecha de registro": new Date(winner.created_at).toLocaleString(),
+      }))
+    );
+
+    // Create workbook and add the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ganadores");
+
+    // Generate file name with current date
+    const fileName = `Ganadores_${format(new Date(), "dd-MM-yyyy")}.xlsx`;
+
+    // Export to file
+    XLSX.writeFile(workbook, fileName);
+
+    toast({
+      title: "Éxito",
+      description: "Lista de ganadores exportada a Excel",
+    });
+  };
+
+  const clearDateFilter = () => {
+    setStartDate(undefined);
+    setEndDate(undefined);
   };
 
   return (
@@ -80,23 +145,86 @@ const Winners = () => {
           </Link>
         </div>
 
-        <div className="relative mb-6">
-          <div className="flex items-center max-w-sm">
-            <Input
-              type="text"
-              placeholder="Buscar por DNI"
-              value={searchDni}
-              onChange={handleSearchChange}
-              className="bg-white/20 text-white border-none placeholder:text-gray-300 pr-10"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white h-5 w-5" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div className="relative w-full md:w-auto">
+            <div className="flex items-center max-w-sm">
+              <Input
+                type="text"
+                placeholder="Buscar por DNI"
+                value={searchDni}
+                onChange={handleSearchChange}
+                className="bg-white/20 text-white border-none placeholder:text-gray-300 pr-10"
+              />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white h-5 w-5" />
+            </div>
+          </div>
+          
+          <div className="flex flex-col md:flex-row items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="bg-white/20 text-white border-none">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    {startDate && endDate
+                      ? `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`
+                      : "Filtrar por fecha"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <div className="p-3 space-y-3">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-medium">Fecha inicio</h4>
+                      <CalendarComponent
+                        mode="single"
+                        selected={startDate}
+                        onSelect={setStartDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-medium">Fecha fin</h4>
+                      <CalendarComponent
+                        mode="single"
+                        selected={endDate}
+                        onSelect={setEndDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                        disabled={(date) => startDate ? date < startDate : false}
+                      />
+                    </div>
+                    <div className="flex justify-between">
+                      <Button size="sm" variant="outline" onClick={clearDateFilter}>
+                        Limpiar
+                      </Button>
+                      <Button size="sm" onClick={() => filterWinners()}>
+                        Aplicar
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Button 
+                onClick={handleExportToExcel} 
+                disabled={filteredWinners.length === 0} 
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Exportar a Excel
+              </Button>
+            </div>
           </div>
         </div>
 
         {loading ? (
           <p className="text-white text-center py-4">Cargando ganadores...</p>
         ) : filteredWinners.length === 0 ? (
-          <p className="text-white text-center py-4">{searchDni.trim() ? "No se encontraron ganadores con ese DNI" : "No hay ganadores registrados aún"}</p>
+          <p className="text-white text-center py-4">
+            {searchDni.trim() || (startDate && endDate) 
+              ? "No se encontraron ganadores con los filtros seleccionados" 
+              : "No hay ganadores registrados aún"}
+          </p>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredWinners.map((winner) => (

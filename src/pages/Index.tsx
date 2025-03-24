@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -263,8 +264,8 @@ const Index = () => {
       } else if (prizes[prizeNumber].number === 9) {
         await saveBeneficiary(beneficiaryWithPrize);
         setLastWinner(beneficiaryWithPrize);
-        setShowConfirmation(true);
-        setShowTimer(true);
+        setShowConfirmation(false); // Don't show confirmation for "PERDISTE"
+        setShowTimer(false); // Don't show timer for "PERDISTE"
         toast({
           title: "No te desanimes",
           description: "Aun puedes potenciar tu perfil profesional",
@@ -419,7 +420,8 @@ const Index = () => {
               {showTimer && !timerExpired && (
                 <CountdownTimer 
                   initialMinutes={10} 
-                  onComplete={handleTimerComplete} 
+                  onComplete={handleTimerComplete}
+                  variant="warning" 
                 />
               )}
               

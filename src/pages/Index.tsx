@@ -507,7 +507,7 @@ const Index = () => {
             </div>
           </div>
           <div className="w-full max-w-md mt-6">
-            <h3 className="text-xl   font-bold mb-5 text-white ">Premios por Aquirir un curso:</h3>
+            <h3 className="text-xl   font-bold mb-5 text-white ">Premios por Adquirir un curso:</h3>
             <ul className="space-y-2 grid grid-cols-1  gap-2">
               {prizes.map((prize, index) => (
                 <li

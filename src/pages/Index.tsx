@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button } from "@/components/ui/button";
@@ -341,6 +340,13 @@ const Index = () => {
     background: "transparent",
   };
 
+  const maskName = (name: string) => {
+    if (!name) return '';
+    const firstLetter = name.charAt(0);
+    const maskedPart = '*'.repeat(Math.max(0, name.length - 1));
+    return `${firstLetter}${maskedPart}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
@@ -445,13 +451,21 @@ const Index = () => {
             <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">
               <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
               <div className="space-y-2">
-                <p className="text-white"><span className="font-semibold">Nombre:</span> {lastWinner.name}</p>
-                <p className="text-white"><span className="font-semibold">DNI:</span> {lastWinner.dni}</p>
+                <p className="text-white">
+                  <span className="font-semibold">Nombre:</span> {maskName(lastWinner.name)}
+                </p>
+                <p className="text-white">
+                  <span className="font-semibold">DNI:</span> {lastWinner.dni}
+                </p>
                 {lastWinner.phone_number && (
-                  <p className="text-white"><span className="font-semibold">Celular:</span> {lastWinner.phone_number}</p>
+                  <p className="text-white">
+                    <span className="font-semibold">Celular:</span> {lastWinner.phone_number}
+                  </p>
                 )}
-                <p className="text-white"><span className="font-semibold">Fecha:</span> {lastWinner.date}</p>
-                <div className="mt-4 py-3 px-4  bg-yellow-400/80 rounded-lg border border-primary/20">
+                <p className="text-white">
+                  <span className="font-semibold">Fecha:</span> {lastWinner.date}
+                </p>
+                <div className="mt-4 py-3 px-4 bg-yellow-400/80 rounded-lg border border-primary/20">
                   <p className="font-bold text-lg text-white text-center">
                     {lastWinner.prize}
                   </p>

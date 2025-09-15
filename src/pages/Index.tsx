@@ -448,7 +448,7 @@ const Index = () => {
           )}
 
           {lastWinner && (
-            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white 50 shadow-xl animate-fade-in">
+            <div className="mt-6 p-6 bg-cyan-300/10 backdrop-blur-md rounded-lg border border-white/50 shadow-xl animate-fade-in">
               <h3 className="font-bold text-xl mb-3 text-white">¡Último Ganador!</h3>
               <div className="space-y-2">
                 <p className="text-white">

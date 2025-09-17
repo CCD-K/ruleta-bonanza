@@ -73,27 +73,7 @@ export type Database = {
       }
     }
     Views: {
-      beneficiaries_public: {
-        Row: {
-          created_at: string | null
-          date: string | null
-          id: string | null
-          name: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          date?: string | null
-          id?: string | null
-          name?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          date?: string | null
-          id?: string | null
-          name?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       is_admin: {
